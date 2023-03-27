@@ -1,15 +1,27 @@
-# Sa Vue Template
+# Sa Workflow
 
-A vue template project help you start with Vue3 and Typescript in Vite.
+A workflow component based on Vue3.
+
+⚠️ `sa-workflow` is currently working in progress. ⚠️
 
 ## Features
 
-- [x] AutoImport
-- [x] Tailwindcss
-- [x] ElementPLus
-- [x] Husky and Commitlint
-- [x] Eslint and Prettier
-- [x] Vitest
-- [x] Pnpm
-- [x] Pwa
-- [x] Standard Version
+- [ ] History record
+- [ ] Support for horizontal and vertical switching
+- [ ] Highly configurable node properties
+
+## Use
+
+```sh
+pnpm install
+pnpm run dev
+```
+
+## Inspired by
+
+- [workflow-vue3](https://github.com/StavinLi/Workflow-Vue3) - 仿钉钉审批流程设置 vue3 版本
+- [@antv/x6](https://github.com/antvis/X6) - JavaScript diagramming library that uses SVG and HTML for rendering
+
+## License
+
+The MIT License (MIT)

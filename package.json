@@ -1,11 +1,11 @@
 {
-  "name": "vue-template",
+  "name": "workflow",
   "version": "0.0.1",
   "packageManager": "pnpm@7.12.2",
-  "description": "A vue3 template project",
+  "description": "Workflow component based on Vue3",
   "license": "MIT",
   "author": "hfutsora",
-  "repository": "https://github.com/Hfutsora/vue-template",
+  "repository": "https://github.com/Hfutsora/workflow",
   "workspaces": [
     "packages/*",
     "internal/*"
