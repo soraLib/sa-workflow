@@ -8,5 +8,10 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ElCard: typeof import('element-plus/es')['ElCard']
+    Header: typeof import('./src/components/Header/index.vue')['default']
+    VPIconMoon: typeof import('./src/components/Header/icons/VPIconMoon.vue')['default']
+    VPIconSun: typeof import('./src/components/Header/icons/VPIconSun.vue')['default']
+    VPSwitch: typeof import('./src/components/Header/VPSwitch.vue')['default']
+    VPSwitchAppearance: typeof import('./src/components/Header/VPSwitchAppearance.vue')['default']
   }
 }

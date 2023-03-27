@@ -7,6 +7,7 @@ const getPackages = (packagePath) =>
 const scopes = [
   ...getPackages('packages'),
   ...getPackages('internal'),
+  'theme',
   'docs',
   'play',
   'project',

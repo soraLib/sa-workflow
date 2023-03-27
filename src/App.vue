@@ -1,20 +1,13 @@
 <script setup lang="ts">
 import ReloadPrompt from './ReloadPrompt.vue'
+import SaHeader from './components/Header/index.vue'
 </script>
 
 <template>
-  <div class="h-full w-full flex justify-center items-center">
-    <div>
-      <img
-        alt="Vue logo"
-        class="logo"
-        src="./assets/logo.svg"
-        width="125"
-        height="125"
-      />
+  <div class="h-full w-full flex flex-col justify-center items-center">
+    <SaHeader />
 
-      <ElCard>Auto Import Test</ElCard>
-    </div>
+    <div class="grow" />
   </div>
 
   <ReloadPrompt />
