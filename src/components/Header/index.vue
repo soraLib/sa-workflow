@@ -57,6 +57,8 @@ import VPNavBarAppearance from './VPSwitchAppearance.vue'
   align-items: center;
   border-bottom: 1px solid var(--vp-c-divider);
   padding: 0.7rem 2em;
+  height: var(--vp-navbar-height);
+  z-index: 1;
 
   .navbar-title {
     font-size: 1.3rem;

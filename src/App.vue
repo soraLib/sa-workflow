@@ -1,25 +1,26 @@
 <script setup lang="ts">
 import ReloadPrompt from './ReloadPrompt.vue'
 import SaHeader from './components/Header/index.vue'
+
+import SaWorkflow from './SaWorkflow/index.vue'
 </script>
 
 <template>
   <div class="h-full w-full flex flex-col justify-center items-center">
     <SaHeader />
 
-    <div class="grow" />
+    <div class="sa-workflow-wrapper">
+      <SaWorkflow />
+    </div>
   </div>
 
   <ReloadPrompt />
 </template>
 
 <style lang="scss" scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.sa-workflow-wrapper {
+  padding-top: var(--vp-navbar-height);
+  height: 100%;
+  width: 100%;
 }
 </style>
