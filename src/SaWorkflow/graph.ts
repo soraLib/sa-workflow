@@ -1,11 +1,11 @@
 import { cloneDeep } from 'lodash-es'
 import { findNode, findTreeNode, setObjectValues } from '@sa/utils'
 import { NodeType } from './node'
-import type { InjectionKey } from 'vue'
+import type { InjectionKey, Ref } from 'vue'
 import type { BasicNode, BasicNodeAttributes, WNode } from './node'
 import type { BasicRecord, BasicRecordStore } from './record'
 
-export const GRAPH_INJECTION_KEY: InjectionKey<Graph> = Symbol('graph')
+export const GRAPH_INJECTION_KEY: InjectionKey<Ref<Graph>> = Symbol('graph')
 
 export namespace Graph {
   export type Direction = 'horizontal' | 'vertical'
@@ -47,9 +47,16 @@ export class Graph implements Graph.Base {
     this.root = options.root
     this.selected = [this.root]
   }
+
+  switchDirection(): Graph.Direction {
+    return (this.direction =
+      this.direction === 'horizontal' ? 'vertical' : 'horizontal')
+  }
+
   getNextId() {
     return (this.nextId = String(Number(this.nextId) + 1))
   }
+
   updateElemData(
     id: string,
     data: Partial<BasicNodeAttributes>,

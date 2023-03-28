@@ -37,7 +37,6 @@ const isBeginNode = computed(() => !props.node.parent)
   padding: 0 50px;
   position: relative;
 }
-
 .node {
   display: inline-flex;
   flex-direction: column;
@@ -65,6 +64,33 @@ const isBeginNode = computed(() => !props.node.parent)
     z-index: 2;
   }
 }
+
+.direction-horizontal {
+  .node-wrapper {
+    padding: 50px 0;
+    width: fit-content;
+    flex-direction: row;
+  }
+  .node {
+    flex-direction: row;
+
+    &:not(.begin-node)::before {
+      content: '';
+      position: absolute;
+      top: calc(50% - 6px);
+      left: -12px;
+      transform: rotate(-90deg);
+      width: 0;
+      height: 4px;
+      border-style: solid;
+      border-width: 8px 6px 4px;
+      border-color: var(--vp-c-border) transparent transparent;
+      background-color: var(--vp-c-bg-soft);
+      z-index: 2;
+    }
+  }
+}
+
 html.dark {
   .node {
     background-color: var(--vp-c-brand-dark);

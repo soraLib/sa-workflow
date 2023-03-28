@@ -7,7 +7,7 @@
         </ElHeader>
 
         <ElMain class="py-1 px-0 w-full">
-          <WorkflowWorkspace class="sa-block" />
+          <WorkflowWorkspace class="sa-block workspace" />
         </ElMain>
 
         <ElFooter class="p-0 w-full">
@@ -49,7 +49,7 @@ root.child = new WNode({
 })
 
 // initialize
-const graph = new Graph({ root })
+const graph = ref(new Graph({ root }))
 
 provide(GRAPH_INJECTION_KEY, graph)
 </script>
@@ -62,7 +62,10 @@ provide(GRAPH_INJECTION_KEY, graph)
 .sa-block {
   width: 100%;
   height: 100%;
-  padding: 0.2rem 0.4rem;
+  padding: 0.2rem 1.2rem;
   background-color: var(--vp-c-bg-soft);
+}
+.workspace {
+  padding: 2rem;
 }
 </style>

@@ -28,4 +28,17 @@
     height: 72px;
   }
 }
+
+.direction-horizontal {
+  .edge-wrapper {
+    width: 72px;
+
+    &:before {
+      margin: auto;
+      height: 2px;
+      width: 100%;
+      background-color: var(--vp-c-border);
+    }
+  }
+}
 </style>

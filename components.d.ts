@@ -14,6 +14,7 @@ declare module '@vue/runtime-core' {
     ElFooter: typeof import('element-plus/es')['ElFooter']
     ElHeader: typeof import('element-plus/es')['ElHeader']
     ElMain: typeof import('element-plus/es')['ElMain']
+    ElSwitch: typeof import('element-plus/es')['ElSwitch']
     Header: typeof import('./src/components/Header/index.vue')['default']
     VPIconMoon: typeof import('./src/components/Header/icons/VPIconMoon.vue')['default']
     VPIconSun: typeof import('./src/components/Header/icons/VPIconSun.vue')['default']

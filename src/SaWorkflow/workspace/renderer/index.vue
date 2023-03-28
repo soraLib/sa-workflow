@@ -1,9 +1,6 @@
 <template>
-  <div>
-    <NodeRenderer :node="root" />
-
-    <EndNode />
-  </div>
+  <NodeRenderer :node="root" />
+  <EndNode />
 </template>
 
 <script lang="ts" setup>
