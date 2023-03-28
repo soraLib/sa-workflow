@@ -1,0 +1,31 @@
+<template>
+  <div class="edge-wrapper">
+    <div class="edge" />
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.edge-wrapper {
+  width: 220px;
+  display: inline-flex;
+  flex-shrink: 0;
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    margin: auto;
+    width: 2px;
+    background-color: var(--vp-c-border);
+  }
+
+  .edge {
+    height: 72px;
+  }
+}
+</style>

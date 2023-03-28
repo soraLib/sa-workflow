@@ -40,7 +40,8 @@
     "@sa/constants": "workspace:*",
     "@sa/utils": "workspace:*",
     "@vueuse/core": "9.3.1",
-    "element-plus": "^2.3.1"
+    "element-plus": "^2.3.1",
+    "lodash-es": "^4.17.21"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",

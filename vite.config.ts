@@ -82,6 +82,8 @@ export default defineConfig({
           importStyle: 'sass',
         }),
       ],
+      imports: ['vue'],
+      dts: 'auto-imports.d.ts',
     }),
     Components({
       resolvers: [

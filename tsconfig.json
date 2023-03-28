@@ -18,6 +18,7 @@
     },
     "types": [
       "element-plus/global",
+      "unplugin-vue-define-options/macros-global",
       "vite-plugin-pwa/client",
       "vite-plugin-pwa/info"
     ]

@@ -1,35 +1,68 @@
 <template>
   <section class="sa-workflow flex flex-col h-full">
     <ElContainer class="m-8">
-      <ElContainer class="sa-background">
-        <ElHeader class="p-0">
-          <SaFormHeader options="{layout.header}" class="sa-background" />
+      <ElContainer>
+        <ElHeader class="p-0 w-full">
+          <WorkflowToolbar class="sa-block" />
         </ElHeader>
 
-        <ElMain class="p-0">
-          <SaFormWorkspace class="workspace" />
+        <ElMain class="py-1 px-0 w-full">
+          <WorkflowWorkspace class="sa-block" />
         </ElMain>
 
-        <ElFooter class="p-0">
-          <SaFormFooter class="sa-background" />
+        <ElFooter class="p-0 w-full">
+          <WorkflowStatusBar class="sa-block" />
         </ElFooter>
       </ElContainer>
 
-      <ElAside class="w-64 ml-1 sa-background">
-        <SaFormController controller="{layout.controller}" />
+      <ElAside class="w-64 ml-1">
+        <WorkflowPropertyPanel class="sa-block" />
       </ElAside>
     </ElContainer>
   </section>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+// split modules
+import WorkflowToolbar from './toolbar/index.vue'
+import WorkflowWorkspace from './workspace/index.vue'
+import WorkflowStatusBar from './status-bar//index.vue'
+import WorkflowPropertyPanel from './property-panel/index.vue'
+import { GRAPH_INJECTION_KEY, Graph } from './graph'
+import { NodeType, WNode } from './node'
+
+const root = new WNode({
+  type: NodeType.Root,
+  attrs: {
+    id: '1',
+    name: 'root',
+  },
+})
+
+root.child = new WNode({
+  type: NodeType.Node,
+  parent: root,
+  attrs: {
+    id: '2',
+    name: 'Node A',
+  },
+})
+
+// initialize
+const graph = new Graph({ root })
+
+provide(GRAPH_INJECTION_KEY, graph)
+</script>
 
 <style lang="scss" scoped>
 .sa-workflow {
   background-color: var(--vp-c-bg-soft-down);
 }
 
-.sa-background {
+.sa-block {
+  width: 100%;
+  height: 100%;
+  padding: 0.2rem 0.4rem;
   background-color: var(--vp-c-bg-soft);
 }
 </style>
