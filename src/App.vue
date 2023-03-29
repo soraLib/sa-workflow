@@ -6,7 +6,7 @@ import SaWorkflow from './SaWorkflow/index.vue'
 </script>
 
 <template>
-  <div class="h-full w-full flex flex-col justify-center items-center">
+  <div class="h-screen flex">
     <SaHeader />
 
     <div class="sa-workflow-wrapper">
@@ -20,7 +20,7 @@ import SaWorkflow from './SaWorkflow/index.vue'
 <style lang="scss" scoped>
 .sa-workflow-wrapper {
   padding-top: var(--vp-navbar-height);
-  height: 100%;
   width: 100%;
+  max-height: calc(100vh - var(--vp-navbar-height));
 }
 </style>

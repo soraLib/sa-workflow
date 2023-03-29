@@ -1,25 +1,25 @@
 <template>
-  <section class="sa-workflow flex flex-col h-full">
-    <ElContainer class="m-8">
-      <ElContainer>
-        <ElHeader class="p-0 w-full">
-          <WorkflowToolbar class="sa-block" />
-        </ElHeader>
+  <main class="workflow-wrapper m-8 flex flex-col h-full">
+    <main class="workflow">
+      <header class="toolbar">
+        <WorkflowToolbar class="sa-block" />
+      </header>
 
-        <ElMain class="py-1 px-0 w-full">
+      <main class="py-1 overflow-auto">
+        <ElScrollbar class="workspace-scrollbar">
           <WorkflowWorkspace class="sa-block workspace" />
-        </ElMain>
+        </ElScrollbar>
+      </main>
 
-        <ElFooter class="p-0 w-full">
-          <WorkflowStatusBar class="sa-block" />
-        </ElFooter>
-      </ElContainer>
+      <footer class="status-bar">
+        <WorkflowStatusBar class="sa-block" />
+      </footer>
+    </main>
 
-      <ElAside class="w-64 ml-1">
-        <WorkflowPropertyPanel class="sa-block" />
-      </ElAside>
-    </ElContainer>
-  </section>
+    <aside class="ml-1">
+      <WorkflowPropertyPanel class="sa-block" />
+    </aside>
+  </main>
 </template>
 
 <script lang="ts" setup>
@@ -29,7 +29,7 @@ import WorkflowWorkspace from './workspace/index.vue'
 import WorkflowStatusBar from './status-bar//index.vue'
 import WorkflowPropertyPanel from './property-panel/index.vue'
 import { GRAPH_INJECTION_KEY, Graph } from './graph'
-import { NodeType, WNode } from './node'
+import { NodeType, WCondNode, WNode } from './node'
 
 const root = new WNode({
   type: NodeType.Root,
@@ -38,6 +38,24 @@ const root = new WNode({
     name: 'root',
   },
 })
+root.conditions.push(
+  new WCondNode({
+    type: NodeType.Condition,
+    parent: root,
+    attrs: {
+      id: '3',
+      name: 'Cond A',
+    },
+  }),
+  new WCondNode({
+    type: NodeType.Condition,
+    parent: root,
+    attrs: {
+      id: '4',
+      name: 'Cond B',
+    },
+  })
+)
 
 root.child = new WNode({
   type: NodeType.Node,
@@ -55,8 +73,17 @@ provide(GRAPH_INJECTION_KEY, graph)
 </script>
 
 <style lang="scss" scoped>
-.sa-workflow {
+.workflow-wrapper {
   background-color: var(--vp-c-bg-soft-down);
+  display: grid;
+  grid-template-columns: auto 278px;
+}
+.workflow {
+  display: grid;
+  grid-template-rows:
+    60px
+    calc(100vh - var(--vp-navbar-height) - 120px - 4rem)
+    60px;
 }
 
 .sa-block {
@@ -65,6 +92,7 @@ provide(GRAPH_INJECTION_KEY, graph)
   padding: 0.2rem 1.2rem;
   background-color: var(--vp-c-bg-soft);
 }
+
 .workspace {
   padding: 2rem;
 }

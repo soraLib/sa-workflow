@@ -1,17 +1,21 @@
 <template>
-  <div class="node-wrapper">
+  <div class="node-wrapper" :class="{ 'condition-node-wrapper': isCondNode }">
     <div class="node" :class="{ 'begin-node': isBeginNode }">
       {{ node.attrs.name }}
     </div>
 
-    <EdgeRenderer />
+    <EdgeRenderer v-if="!isCondNode" />
   </div>
+
+  <BranchRenderer v-if="node.conditions.length" :conditions="node.conditions" />
 
   <NodeRenderer v-if="node.child" :node="node.child" />
 </template>
 
 <script lang="ts" setup>
+import { NodeType } from '../../node'
 import EdgeRenderer from './edge.vue'
+import BranchRenderer from './branch.vue'
 import type { WNode } from '../../node'
 
 defineOptions({
@@ -23,6 +27,7 @@ const props = defineProps<{
 }>()
 
 const isBeginNode = computed(() => !props.node.parent)
+const isCondNode = computed(() => props.node.type === NodeType.Condition)
 </script>
 
 <style lang="scss" scoped>
@@ -62,14 +67,27 @@ const isBeginNode = computed(() => !props.node.parent)
     border-color: var(--vp-c-border) transparent transparent;
     background-color: var(--vp-c-bg-soft);
     z-index: 2;
+    pointer-events: none;
   }
 }
+
+// =========== condition node ===============
+.condition-node-wrapper {
+  min-height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+// ==========================================
+
+// ========= direction horizontal ===========
 
 .direction-horizontal {
   .node-wrapper {
     padding: 50px 0;
-    width: fit-content;
     flex-direction: row;
+    flex-wrap: nowrap;
+    width: fit-content;
   }
   .node {
     flex-direction: row;
@@ -89,7 +107,13 @@ const isBeginNode = computed(() => !props.node.parent)
       z-index: 2;
     }
   }
+
+  .condition-node-wrapper {
+    min-width: 370px;
+  }
 }
+
+// ==========================================
 
 html.dark {
   .node {
