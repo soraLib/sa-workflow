@@ -9,6 +9,7 @@ A workflow component based on Vue3.
 - [ ] History record
 - [ ] Support for horizontal and vertical switching
 - [ ] Highly configurable node properties
+- [ ] Customizable graph zooming
 
 ## Use
 
