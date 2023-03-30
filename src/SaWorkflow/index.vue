@@ -29,45 +29,10 @@ import WorkflowWorkspace from './workspace/index.vue'
 import WorkflowStatusBar from './status-bar//index.vue'
 import WorkflowPropertyPanel from './property-panel/index.vue'
 import { GRAPH_INJECTION_KEY, Graph } from './graph'
-import { NodeType, WCondNode, WNode } from './node'
-
-const root = new WNode({
-  type: NodeType.Root,
-  attrs: {
-    id: '1',
-    name: 'root',
-  },
-})
-root.conditions.push(
-  new WCondNode({
-    type: NodeType.Condition,
-    parent: root,
-    attrs: {
-      id: '3',
-      name: 'Cond A',
-    },
-  }),
-  new WCondNode({
-    type: NodeType.Condition,
-    parent: root,
-    attrs: {
-      id: '4',
-      name: 'Cond B',
-    },
-  })
-)
-
-root.child = new WNode({
-  type: NodeType.Node,
-  parent: root,
-  attrs: {
-    id: '2',
-    name: 'Node A',
-  },
-})
+import { mockRoot } from './mock'
 
 // initialize
-const graph = ref(new Graph({ root }))
+const graph = ref(new Graph({ root: mockRoot }))
 
 provide(GRAPH_INJECTION_KEY, graph)
 </script>
@@ -95,5 +60,7 @@ provide(GRAPH_INJECTION_KEY, graph)
 
 .workspace {
   padding: 2rem;
+  width: fit-content;
+  height: fit-content;
 }
 </style>

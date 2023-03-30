@@ -59,6 +59,9 @@ defineProps<{
   position: relative;
 }
 .branch {
+  position: relative;
+  background-color: var(--vp-c-bg-soft);
+
   &::before {
     content: '';
     position: absolute;
@@ -116,6 +119,7 @@ defineProps<{
     min-height: 72px;
     min-width: 270px;
     flex-direction: row;
+    flex-wrap: nowrap;
   }
   .branch-content {
     flex-direction: column;
@@ -125,6 +129,8 @@ defineProps<{
     border-right: 2px solid var(--vp-c-border);
   }
   .branch {
+    display: flex;
+
     &::before {
       width: 100%;
       height: 2px;
@@ -140,15 +146,18 @@ defineProps<{
     top: -1px;
   }
   .bottom-left-edge-cover {
-    left: -4px;
-    bottom: calc(-100% - 1px);
+    left: 100%;
+    bottom: 0;
+    right: -4px;
+    top: -1px;
   }
   .top-right-edge-cover {
+    top: unset;
     right: -4px;
-    top: calc(-100% - 1px);
+    bottom: -1px;
   }
   .bottom-right-edge-cover {
-    right: -4px;
+    left: -4px;
     bottom: -1px;
   }
 }
