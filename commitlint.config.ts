@@ -10,6 +10,7 @@ const scopes = [
   'theme',
   'docs',
   'play',
+  'build',
   'project',
   'core',
   'style',
