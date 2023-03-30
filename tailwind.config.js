@@ -5,4 +5,9 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  corePlugins: {
+    // tailwindcss conflict https://github.com/element-plus/element-plus/issues/5693
+    // see also https://github.com/tailwindlabs/tailwindcss/issues/6602
+    preflight: false,
+  },
 }

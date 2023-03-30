@@ -29,10 +29,11 @@ import WorkflowWorkspace from './workspace/index.vue'
 import WorkflowStatusBar from './status-bar//index.vue'
 import WorkflowPropertyPanel from './property-panel/index.vue'
 import { GRAPH_INJECTION_KEY, Graph } from './graph'
-import { mockRoot } from './mock'
+import { createMockRoot } from './mock'
 
 // initialize
-const graph = ref(new Graph({ root: mockRoot }))
+const graph = ref(new Graph())
+graph.value.root = createMockRoot(graph.value)
 
 provide(GRAPH_INJECTION_KEY, graph)
 </script>

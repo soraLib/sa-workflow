@@ -1,4 +1,6 @@
+import Ref from 'vue'
 import { cloneDeep } from 'lodash-es'
+import type { Graph } from './graph'
 import type { CSSProperties } from 'vue'
 
 /**
@@ -24,8 +26,13 @@ import type { CSSProperties } from 'vue'
 export enum NodeType {
   /** tree root */
   Root = 1,
-  /** condition node, used at the beginning of a branch */
-  Condition,
+  /**
+   * @deprecated
+   *
+   * condition node, used at the beginning of a branch
+   *
+   */
+  Condition, // TODO: remove
   /** normal node */
   Node,
 }
@@ -44,8 +51,12 @@ export interface BasicNodeAttributes {
 export interface BasicNode {
   type: NodeType
   parent: BasicNode | null
+  child: BasicNode | null
   attrs: BasicNodeAttributes
   conditions?: WCondNode[]
+  graph: Graph
+  addChild: (child?: WNode) => WNode
+  addBranch: () => void
 }
 
 export type WNodeAttributes = BasicNodeAttributes /* TODO: & */
@@ -59,31 +70,31 @@ export class WNode implements BasicNode {
   child: WNode | null
   attrs: WNodeAttributes
   conditions: WCondNode[]
+  graph: Graph
 
-  constructor(options: Partial<WNode> & Pick<WNode, 'type' | 'attrs'>) {
+  constructor(
+    options: Partial<WNode> & Pick<WNode, 'type' | 'attrs' | 'graph'>
+  ) {
     this.type = options.type
     this.parent = options.parent ?? null
     this.child = options.child ?? null
     this.conditions = options.conditions ?? []
     this.attrs = cloneDeep(options.attrs)
+    this.graph = options.graph
+  }
+
+  addChild(child?: WNode): WNode {
+    return this.graph.addChild(child, this)
+  }
+
+  addBranch(): void {
+    return this.graph.addBranch(this)
   }
 }
 
 /**
  * Workflow Condition Node
  */
-export class WCondNode implements BasicNode {
+export class WCondNode extends WNode {
   type = NodeType.Condition
-  parent: WNode | null
-  child: WNode | null
-  attrs: WNodeAttributes
-  conditions: WCondNode[]
-
-  constructor(options: Partial<WCondNode> & Pick<WCondNode, 'type' | 'attrs'>) {
-    this.type = options.type
-    this.parent = options.parent ?? null
-    this.child = options.child ?? null
-    this.conditions = options.conditions ?? []
-    this.attrs = cloneDeep(options.attrs)
-  }
 }

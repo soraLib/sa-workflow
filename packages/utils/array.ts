@@ -1,4 +1,4 @@
-export type PredicateCallback<T> = (value: T) => unknown
+import type { PredicateCallback } from './types'
 
 export type TreeNode = {
   children?: TreeNode[]

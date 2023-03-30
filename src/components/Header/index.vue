@@ -60,6 +60,10 @@ import VPNavBarAppearance from './VPSwitchAppearance.vue'
   height: var(--vp-navbar-height);
   z-index: 1;
 
+  a {
+    color: var(--vp-c-text-1);
+  }
+
   .navbar-title {
     font-size: 1.3rem;
     font-weight: 600;

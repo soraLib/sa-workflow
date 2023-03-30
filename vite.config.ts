@@ -68,9 +68,13 @@ if (reload) {
 }
 
 export default defineConfig({
-  // base: process.env.BASE_URL || 'https://github.com/',
   build: {
     sourcemap: process.env.SOURCE_MAP === 'true',
+  },
+  resolve: {
+    alias: {
+      '@': './src',
+    },
   },
   plugins: [
     Vue(),

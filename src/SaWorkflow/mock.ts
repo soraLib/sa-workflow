@@ -1,68 +1,64 @@
-import { NodeType, WCondNode, WNode } from './node'
+import { NodeType } from './node'
+import type { Graph } from './graph'
 
-const root = new WNode({
-  type: NodeType.Root,
-  attrs: {
-    id: '1',
-    name: 'root',
-  },
-})
-
-const CondA = new WCondNode({
-  type: NodeType.Condition,
-  parent: root,
-  attrs: {
-    id: '3',
-    name: 'Cond A',
-  },
-})
-const CondAChild = new WCondNode({
-  type: NodeType.Node,
-  parent: root,
-  attrs: {
-    id: '4',
-    name: 'Cond A Child A',
-  },
-})
-CondA.child = CondAChild
-CondAChild.conditions.push(
-  new WCondNode({
-    type: NodeType.Condition,
-    parent: CondAChild,
+export const createMockRoot = (graph: Graph) => {
+  const root = graph.createNode({
+    type: NodeType.Root,
     attrs: {
-      id: '5',
-      name: 'Cond A Child A Cond A',
-    },
-  }),
-  new WCondNode({
-    type: NodeType.Condition,
-    parent: CondAChild,
-    attrs: {
-      id: '6',
-      name: 'Cond A Child A Cond B',
+      name: 'root',
     },
   })
-)
 
-root.conditions.push(
-  CondA,
-  new WCondNode({
+  const CondA = graph.createNode({
     type: NodeType.Condition,
     parent: root,
     attrs: {
-      id: '7',
-      name: 'Cond B',
+      name: 'Cond A',
     },
   })
-)
+  const CondAChild = graph.createNode({
+    parent: CondA,
+    attrs: {
+      name: 'Cond A Child A',
+    },
+  })
 
-root.child = new WNode({
-  type: NodeType.Node,
-  parent: root,
-  attrs: {
-    id: '2',
-    name: 'Node A',
-  },
-})
+  CondAChild.conditions.push(
+    graph.createNode({
+      type: NodeType.Condition,
+      parent: CondAChild,
+      attrs: {
+        name: 'Cond A Child A Cond A',
+      },
+    }),
+    graph.createNode({
+      type: NodeType.Condition,
+      parent: CondAChild,
+      attrs: {
+        name: 'Cond A Child A Cond B',
+      },
+    })
+  )
 
-export const mockRoot = root
+  root.conditions.push(
+    CondA,
+    graph.createNode({
+      type: NodeType.Condition,
+      parent: root,
+      attrs: {
+        name: 'Cond B',
+      },
+    })
+  )
+
+  root.child = graph.createNode({
+    parent: root,
+    attrs: {
+      name: 'Node A',
+    },
+  })
+
+  console.log('root', root)
+
+  return root
+}

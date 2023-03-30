@@ -39,6 +39,7 @@
     "@sa/components": "workspace:*",
     "@sa/constants": "workspace:*",
     "@sa/utils": "workspace:*",
+    "@vicons/ionicons5": "^0.12.0",
     "@vueuse/core": "9.3.1",
     "element-plus": "^2.3.1",
     "lodash-es": "^4.17.21"

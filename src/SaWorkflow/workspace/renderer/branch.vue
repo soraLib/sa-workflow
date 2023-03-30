@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import NodeRenderer from './node.vue'
+import NodeRenderer from './node/index.vue'
 import EdgeRenderer from './edge.vue'
 import type { WCondNode } from '@/SaWorkflow/node'
 

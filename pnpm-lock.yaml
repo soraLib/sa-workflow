@@ -16,6 +16,7 @@ importers:
       '@types/jsdom': ^20.0.0
       '@types/node': ^18.8.0
       '@types/sass': ^1.43.1
+      '@vicons/ionicons5': ^0.12.0
       '@vitejs/plugin-vue': ^3.1.2
       '@vitejs/plugin-vue-jsx': ^2.0.1
       '@vitest/coverage-c8': ^0.25.2
@@ -59,6 +60,7 @@ importers:
       '@sa/components': link:packages/components
       '@sa/constants': link:packages/constants
       '@sa/utils': link:packages/utils
+      '@vicons/ionicons5': 0.12.0
       '@vueuse/core': 9.3.1_vue@3.2.45
       element-plus: 2.3.1_vue@3.2.45
       lodash-es: 4.17.21
@@ -2126,6 +2128,10 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.43.0
       eslint-visitor-keys: 3.3.0
+    dev: false
+
+  /@vicons/ionicons5/0.12.0:
+    resolution: {integrity: sha512-Iy1EUVRpX0WWxeu1VIReR1zsZLMc4fqpt223czR+Rpnrwu7pt46nbnC2ycO7ItI/uqDLJxnbcMC7FujKs9IfFA==}
     dev: false
 
   /@vitejs/plugin-vue-jsx/2.1.1_vue@3.2.45:

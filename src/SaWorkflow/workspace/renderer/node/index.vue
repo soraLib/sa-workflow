@@ -1,8 +1,10 @@
 <template>
-  <div class="node-wrapper" :class="{ 'condition-node-wrapper': isCondNode }">
-    <div class="node" :class="{ 'begin-node': isBeginNode }">
-      {{ node.attrs.name }}
-    </div>
+  <div :class="['node-wrapper', { 'condition-node-wrapper': isCondNode }]">
+    <NodeWrapper :node="node">
+      <div :class="['node', { 'begin-node': isBeginNode }]">
+        {{ node.attrs.id }} : {{ node.attrs.name }}
+      </div>
+    </NodeWrapper>
 
     <EdgeRenderer v-if="!isCondNode" />
   </div>
@@ -13,10 +15,11 @@
 </template>
 
 <script lang="ts" setup>
-import { NodeType } from '../../node'
-import EdgeRenderer from './edge.vue'
-import BranchRenderer from './branch.vue'
-import type { WNode } from '../../node'
+import EdgeRenderer from '../edge.vue'
+import BranchRenderer from '../branch.vue'
+import NodeWrapper from './container.vue'
+import type { WNode } from '@/SaWorkflow/node'
+import { NodeType } from '@/SaWorkflow/node'
 
 defineOptions({
   name: 'NodeRenderer',
