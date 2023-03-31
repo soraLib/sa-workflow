@@ -52,7 +52,8 @@ const isCondNode = computed(() => props.node.type === NodeType.Condition)
   width: 220px;
   min-height: 72px;
   flex-shrink: 0;
-  background-color: var(--vp-c-brand-dark);
+  border: 1px solid var(--vp-c-border);
+  background-color: var(--vp-c-bg-soft);
   border-radius: 8px;
   cursor: pointer;
   padding: 4px 12px;
@@ -60,7 +61,7 @@ const isCondNode = computed(() => props.node.type === NodeType.Condition)
   &:not(.begin-node)::before {
     content: '';
     position: absolute;
-    top: -12px;
+    top: -13px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;

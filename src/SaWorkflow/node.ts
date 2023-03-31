@@ -1,4 +1,3 @@
-import Ref from 'vue'
 import { cloneDeep } from 'lodash-es'
 import type { Graph } from './graph'
 import type { CSSProperties } from 'vue'
@@ -57,6 +56,7 @@ export interface BasicNode {
   graph: Graph
   addChild: (child?: WNode) => WNode
   addBranch: () => void
+  remove: () => void
 }
 
 export type WNodeAttributes = BasicNodeAttributes /* TODO: & */
@@ -89,6 +89,10 @@ export class WNode implements BasicNode {
 
   addBranch(): void {
     return this.graph.addBranch(this)
+  }
+
+  remove(): void {
+    this.graph.removeNode(this)
   }
 }
 

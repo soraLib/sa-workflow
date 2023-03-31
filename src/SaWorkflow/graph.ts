@@ -25,16 +25,15 @@ export namespace Graph {
     /** graph display direction, default is vertical */
     direction: Direction
     getNextId(): string
-
     /** create a new node */
     createNode(node?: DeepPartial<BasicNode>): BasicNode
-
     /** add a child and return its parent */
     addChild(child: BasicNode | undefined, parent?: BasicNode): BasicNode
     // TODO: addChild(child: BasicNode, parent?: string): BasicNode
-
     // add a branch on node (not root)
     addBranch(node: BasicNode): void
+    // remove a node
+    removeNode(node: BasicNode): void
 
     updateElemData(
       id: string,
@@ -136,6 +135,24 @@ export class Graph implements Graph.Base {
         this.createNode({ type: NodeType.Condition, parent: node.parent }),
       ]
     }
+  }
+
+  removeNode(node: WNode): void {
+    // the root node cannot be removed.
+    if (node.type === NodeType.Root) return
+
+    const parent = node.parent
+    if (!parent) return
+
+    if (node.type === NodeType.Condition) {
+      const index = parent.conditions.findIndex(
+        (cond) => cond.attrs.id === node.attrs.id
+      )
+      parent.conditions.splice(index, 1)
+      return
+    }
+
+    parent.child = null
   }
 
   updateElemData(

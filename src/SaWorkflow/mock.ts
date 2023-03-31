@@ -58,7 +58,5 @@ export const createMockRoot = (graph: Graph) => {
     },
   })
 
-  console.log('root', root)
-
   return root
 }

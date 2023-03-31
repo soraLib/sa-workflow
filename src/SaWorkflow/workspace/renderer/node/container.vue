@@ -2,6 +2,19 @@
   <div class="node-container">
     <ElButton
       v-if="!isRoot"
+      title="remove node"
+      class="remove-node"
+      link
+      type="danger"
+      @click="removeNode"
+    >
+      <ElIcon :size="24">
+        <CloseSharp />
+      </ElIcon>
+    </ElButton>
+
+    <ElButton
+      v-if="!isRoot"
       title="add branch"
       class="add-branch"
       circle
@@ -15,15 +28,19 @@
       title="add child node"
       class="add-child"
       circle
-      :icon="Plus"
+      :icon="Add"
       @click="addChild"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Plus } from '@element-plus/icons-vue'
-import { ChevronDownOutline, ChevronForwardOutline } from '@vicons/ionicons5'
+import {
+  Add,
+  ChevronDownOutline,
+  ChevronForwardOutline,
+  CloseSharp,
+} from '@vicons/ionicons5'
 import type { WNode } from '@/SaWorkflow/node'
 import { NodeType } from '@/SaWorkflow/node'
 
@@ -45,6 +62,10 @@ const addChild = () => {
 const addBranch = () => {
   props.node.addBranch()
 }
+
+const removeNode = () => {
+  props.node.remove()
+}
 </script>
 
 <style lang="scss" scoped>
@@ -53,7 +74,7 @@ $half: 16px;
 .node-container {
   position: relative;
 
-  .add-basic {
+  .button-basic {
     opacity: 0;
     width: fit-content;
     position: absolute;
@@ -61,21 +82,26 @@ $half: 16px;
     transition: opacity 0.2s ease-in-out;
   }
   &:hover {
-    .add-basic {
+    .button-basic {
       opacity: 1;
     }
   }
 
   .add-branch {
-    @extend .add-basic;
+    @extend .button-basic;
     right: -$half;
     top: calc(50% - $half);
   }
 
   .add-child {
-    @extend .add-basic;
+    @extend .button-basic;
     bottom: -$half;
     left: calc(50% - $half);
+  }
+
+  .remove-node {
+    @extend .button-basic;
+    right: 100%;
   }
 }
 
