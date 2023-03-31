@@ -13,14 +13,14 @@
   font-size: 14px;
   text-align: left;
   .end-node-circle {
-    width: 10px;
-    height: 10px;
+    width: 24px;
+    height: 24px;
     margin: auto;
     border-radius: 50%;
     background: var(--vp-c-border);
   }
   .end-node-text {
-    margin-top: 5px;
+    margin-top: 0.5rem;
     text-align: center;
   }
 }
@@ -31,7 +31,7 @@
   }
   .end-node-text {
     margin-top: 0;
-    margin-left: 5px;
+    margin-left: 0.5rem;
     text-align: center;
   }
 }

@@ -15,8 +15,9 @@
 
     <ElButton
       v-if="!isRoot"
-      title="add branch"
-      class="add-branch"
+      title="add condition"
+      class="add-condition"
+      color="#5856D5"
       circle
       :icon="AddBranchIcon"
       @click="addBranch"
@@ -27,6 +28,7 @@
     <ElButton
       title="add child node"
       class="add-child"
+      color="#5856D5"
       circle
       :icon="Add"
       @click="addChild"
@@ -75,21 +77,27 @@ $half: 16px;
 
 .node-container {
   position: relative;
+  border: 1px solid var(--vp-c-border);
+  background-color: var(--vp-node-bg-color);
+  border-radius: 8px;
+  transition: border-color 0.28s ease-in;
 
   .button-basic {
     opacity: 0;
     width: fit-content;
     position: absolute;
     z-index: 3;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.28s ease-in;
   }
   &:hover {
+    border-color: var(--vp-c-brand);
+
     .button-basic {
       opacity: 1;
     }
   }
 
-  .add-branch {
+  .add-condition {
     @extend .button-basic;
     right: -$half;
     top: calc(50% - $half);
@@ -109,7 +117,7 @@ $half: 16px;
 
 // ========= direction horizontal ===========
 .direction-horizontal .node-container {
-  .add-branch {
+  .add-condition {
     left: calc(50% - $half);
     top: calc(100% - $half);
   }

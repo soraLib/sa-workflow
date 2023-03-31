@@ -1,7 +1,7 @@
 <template>
   <div :class="['node-wrapper', { 'condition-node-wrapper': isCond }]">
     <NodeWrapper :node="node">
-      <div :class="['node', { 'begin-node': isBeginNode }]">
+      <div :class="['node', { 'is-root': isRoot }]">
         {{ node.attrs.id }} : {{ node.attrs.name }}
       </div>
     </NodeWrapper>
@@ -17,9 +17,9 @@
 <script lang="ts" setup>
 import EdgeRenderer from '../edge.vue'
 import BranchRenderer from '../branch.vue'
-import { isCondNode } from '../../../node'
 import NodeWrapper from './container.vue'
 import type { WNode } from '@/SaWorkflow/node'
+import { NodeType, isCondNode } from '@/SaWorkflow/node'
 
 defineOptions({
   name: 'NodeRenderer',
@@ -29,7 +29,7 @@ const props = defineProps<{
   node: WNode
 }>()
 
-const isBeginNode = computed(() => !props.node.parent)
+const isRoot = computed(() => props.node.type === NodeType.Root)
 const isCond = computed(() => isCondNode(props.node))
 </script>
 
@@ -52,14 +52,11 @@ const isCond = computed(() => isCondNode(props.node))
   width: 220px;
   min-height: 72px;
   flex-shrink: 0;
-  border: 1px solid var(--vp-c-border);
-  background-color: var(--vp-c-bg-soft);
-  border-radius: 8px;
   cursor: pointer;
   padding: 4px 12px;
   z-index: 1;
 
-  &:not(.begin-node)::before {
+  &:not(.is-root)::before {
     content: '';
     position: absolute;
     top: -13px;
@@ -97,7 +94,7 @@ const isCond = computed(() => isCondNode(props.node))
   .node {
     flex-direction: row;
 
-    &:not(.begin-node)::before {
+    &:not(.is-root)::before {
       top: calc(50% - 6px);
       left: -13px;
       transform: rotate(-90deg);
@@ -112,10 +109,4 @@ const isCond = computed(() => isCondNode(props.node))
 }
 
 // ==========================================
-
-html.dark {
-  .node {
-    background-color: var(--vp-c-brand-dark);
-  }
-}
 </style>

@@ -86,11 +86,7 @@
 
   --vp-c-text-code: #476582;
 
-  --vp-c-brand: var(--vp-c-green);
-  --vp-c-brand-light: var(--vp-c-green-light);
-  --vp-c-brand-lighter: var(--vp-c-green-lighter);
-  --vp-c-brand-dark: var(--vp-c-green-dark);
-  --vp-c-brand-darker: var(--vp-c-green-darker);
+  --vp-c-brand: #5856d5;
 
   --vp-c-mute: #f6f6f7;
   --vp-c-mute-light: #f9f9fc;
@@ -154,6 +150,16 @@ html.dark:root {
   --vp-input-hover-border-color: var(--vp-c-gray);
 
   --vp-input-switch-bg-color: var(--vp-c-mute);
+}
+
+/**
+ * Component: Node
+ * -------------------------------------------------------------------------- */
+:root {
+  --vp-node-bg-color: #ebebeb;
+}
+html.dark:root {
+  --vp-node-bg-color: #3d3d40;
 }
 
 *,
