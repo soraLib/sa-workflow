@@ -97,18 +97,11 @@ const isCondNode = computed(() => props.node.type === NodeType.Condition)
     flex-direction: row;
 
     &:not(.begin-node)::before {
-      content: '';
-      position: absolute;
       top: calc(50% - 6px);
-      left: -12px;
+      left: -13px;
       transform: rotate(-90deg);
       width: 0;
       height: 4px;
-      border-style: solid;
-      border-width: 8px 6px 4px;
-      border-color: var(--vp-c-border) transparent transparent;
-      background-color: var(--vp-c-bg-soft);
-      z-index: 2;
     }
   }
 
