@@ -24,9 +24,11 @@ import type { CSSProperties } from 'vue'
 /** node types */
 export enum NodeType {
   /** tree root */
-  Root = 1,
-  /** normal node */
-  Node,
+  Root,
+  /** base node */
+  Base,
+  /** route node */
+  Route,
 }
 
 /** basic node attributes */
@@ -39,32 +41,16 @@ export interface BasicNodeAttributes {
   background?: CSSProperties['background']
 }
 
-/** basic node */
-export namespace WNode {
-  export interface Base {
-    type: NodeType
-    parent: WNode | null | undefined
-    child: WNode | null | undefined
-    attrs: BasicNodeAttributes
-    conditions?: WNode[]
-    graph: Graph
-    addChild: (child?: WNode) => WNode
-    addCond: () => void
-    remove: () => void
-  }
-}
-
 export type WNodeAttributes = BasicNodeAttributes /* TODO: & */
 
 /**
- * Workflow Node
+ * Workflow Base Node
  */
-export class WNode implements WNode.Base {
+export class WBase {
   type: NodeType
   parent: WNode | null
   child: WNode | null
   attrs: WNodeAttributes
-  conditions: WNode[]
   graph: Graph
 
   constructor(
@@ -73,7 +59,6 @@ export class WNode implements WNode.Base {
     this.type = options.type
     this.parent = options.parent ?? null
     this.child = options.child ?? null
-    this.conditions = options.conditions ?? []
     this.attrs = cloneDeep(options.attrs)
     this.graph = options.graph
   }
@@ -97,16 +82,40 @@ export const getNodeTail = (node: WNode): WNode => {
   return getNodeTail(node.child)
 }
 
+/**
+ * Workflow Route Node
+ */
+export class WRoute extends WBase {
+  conditions: WNode[]
+
+  constructor(options: Partial<WRoute> & Pick<WRoute, 'attrs' | 'graph'>) {
+    super({
+      type: NodeType.Route,
+      ...options,
+    })
+
+    this.conditions = options.conditions ?? []
+  }
+}
+
 export const findCondIndex = (node: WNode) => {
-  if (!node.parent) return -1
+  if (!node.parent || !isRoute(node.parent)) return -1
 
   return node.parent.conditions.findIndex(
     (cond) => cond.attrs.id === node.attrs.id
   )
 }
 /**
- * is Workflow Condition Node
+ * is route
  */
-export const isCondNode = (node: WNode): boolean => {
-  return findCondIndex(node) > -1
+export const isRoute = (node: WNode): node is WRoute => {
+  return node.type === NodeType.Route
 }
+
+export const isRouteCond = (node: WNode): boolean => {
+  const parent = node.parent
+  if (!parent || !isRoute(parent)) return false
+  return parent.conditions.some((cond) => cond.attrs.id === node.attrs.id)
+}
+
+export type WNode = WBase | WRoute

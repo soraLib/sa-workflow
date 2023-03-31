@@ -3,7 +3,7 @@
     <div class="branch-inner">
       <div class="branch-content">
         <div
-          v-for="(cond, index) in conditions"
+          v-for="(cond, index) in route.conditions"
           :key="cond.attrs.id"
           class="branch"
         >
@@ -14,14 +14,14 @@
             <div class="bottom-left-edge-cover" />
           </template>
 
-          <template v-if="index === conditions.length - 1">
+          <template v-if="index === route.conditions.length - 1">
             <div class="top-right-edge-cover" />
             <div class="bottom-right-edge-cover" />
           </template>
         </div>
       </div>
 
-      <EdgeRenderer v-if="isMultiple" />
+      <EdgeRenderer />
     </div>
   </div>
 </template>
@@ -29,13 +29,11 @@
 <script lang="ts" setup>
 import NodeRenderer from './node/index.vue'
 import EdgeRenderer from './edge.vue'
-import type { WNode } from '@/SaWorkflow/node'
+import type { WRoute } from '@/SaWorkflow/node'
 
-const props = defineProps<{
-  conditions: WNode[]
+defineProps<{
+  route: WRoute
 }>()
-
-const isMultiple = computed(() => props.conditions.length > 1)
 </script>
 
 <style lang="scss" setup>

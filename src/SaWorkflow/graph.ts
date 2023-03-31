@@ -1,9 +1,15 @@
 import { cloneDeep } from 'lodash-es'
-import { isNullish } from '@sa/utils'
-import { NodeType, WNode, findCondIndex, getNodeTail, isCondNode } from './node'
+import {
+  NodeType,
+  WRoute,
+  findCondIndex,
+  getNodeTail,
+  isRoute,
+  isRouteCond,
+} from './node'
 import type { DeepPartial } from '@sa/utils'
 import type { InjectionKey, Ref } from 'vue'
-import type { BasicNodeAttributes } from './node'
+import type { BasicNodeAttributes, WBase, WNode } from './node'
 import type { BasicRecord, BasicRecordStore } from './record'
 
 export const GRAPH_INJECTION_KEY: InjectionKey<Ref<Graph>> = Symbol('graph')
@@ -78,12 +84,12 @@ export class Graph implements Graph.Base {
     return nextId
   }
 
-  createNodeOnly(
-    node?: Partial<Omit<WNode, 'attrs'>> & DeepPartial<Pick<WNode, 'attrs'>>
-  ): WNode {
-    return new WNode({
+  createNodeOnly<T = WBase>(
+    node?: Partial<Omit<WRoute, 'attrs'>> & DeepPartial<Pick<WRoute, 'attrs'>>
+  ): T {
+    return new WRoute({
       graph: node?.graph ?? this,
-      type: node?.type ?? NodeType.Node,
+      type: node?.type ?? NodeType.Base,
       parent: node?.parent,
       child: node?.child,
       conditions: node?.conditions,
@@ -92,18 +98,32 @@ export class Graph implements Graph.Base {
         id: node?.attrs?.id ?? this.getNextId(),
         name: node?.attrs?.name ?? 'New Node',
       },
-    })
+    }) as T
   }
 
   createNode(
-    node?: Partial<Omit<WNode, 'attrs'>> & DeepPartial<Pick<WNode, 'attrs'>>
-  ): WNode {
+    node?: Partial<Omit<WBase, 'attrs'>> & DeepPartial<Pick<WBase, 'attrs'>>
+  ): WBase {
     const createdNode = this.createNodeOnly(node)
 
     if (node?.parent) bindParentChild(node.parent, createdNode)
     if (node?.child) bindParentChild(createdNode, node.child)
 
     return createdNode
+  }
+
+  createRoute(
+    node?: Partial<Omit<WRoute, 'attrs'>> & DeepPartial<Pick<WRoute, 'attrs'>>
+  ): WRoute {
+    const createdRoute = this.createNodeOnly<WRoute>({
+      ...node,
+      type: NodeType.Route,
+    })
+
+    if (node?.parent) bindParentChild(node.parent, createdRoute)
+    if (node?.child) bindParentChild(createdRoute, node.child)
+
+    return createdRoute
   }
 
   createCond(
@@ -118,15 +138,6 @@ export class Graph implements Graph.Base {
 
   addChild(parent: WNode, child?: WNode): WNode {
     if (!child) child = this.createNode()
-
-    if (parent.conditions) {
-      child.conditions = parent.conditions
-      parent.conditions = []
-
-      for (const cond of child.conditions) {
-        cond.parent = child
-      }
-    }
 
     if (!parent.child) {
       bindParentChild(parent, child)
@@ -146,7 +157,7 @@ export class Graph implements Graph.Base {
 
     cond.parent = parent
 
-    if (parent.conditions?.length) {
+    if (isRoute(parent) && isRouteCond(node)) {
       parent.conditions.splice(
         parent.conditions.findIndex((cond) => cond.attrs.id === node.attrs.id) +
           1,
@@ -154,10 +165,18 @@ export class Graph implements Graph.Base {
         cond
       )
     } else {
-      const nodeChild = node.child
+      const createdRoute = this.createRoute()
+      createdRoute.conditions = [node, cond]
+
+      bindParentChild(createdRoute, node.child)
+      bindParentChild(parent, createdRoute)
+
+      createdRoute.conditions.forEach
+
+      for (const cond of createdRoute.conditions) {
+        cond.parent = createdRoute
+      }
       node.child = null
-      bindParentChild(parent, nodeChild)
-      parent.conditions = [node, cond]
     }
   }
 
@@ -168,9 +187,8 @@ export class Graph implements Graph.Base {
     const parent = node.parent
     if (!parent) return
 
-    const index = findCondIndex(node)
-
-    if (index > -1) {
+    if (isRoute(parent) && isRouteCond(node)) {
+      const index = findCondIndex(node)
       if (node.child) {
         parent.conditions.splice(index, 1, node.child)
         node.child.parent = parent
@@ -179,23 +197,15 @@ export class Graph implements Graph.Base {
       }
 
       if (parent.conditions.length === 1) {
-        const headCond = parent.conditions[0]
+        const ancestor = parent.parent!
         parent.conditions = []
-        const tail = getNodeTail(headCond)
+        const tail = getNodeTail(node)
 
-        const parentChild = parent.child
-        bindParentChild(parent, headCond)
-        bindParentChild(tail, parentChild)
+        bindParentChild(ancestor, node)
+        bindParentChild(tail, parent.child)
       }
     } else {
       bindParentChild(parent, node.child)
-    }
-
-    if (node.conditions.length) {
-      parent.conditions = [...node.conditions]
-      for (const cond of parent.conditions) {
-        cond.parent = parent
-      }
     }
   }
 
