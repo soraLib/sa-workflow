@@ -1,62 +1,45 @@
 import { NodeType } from './node'
+import type { WNode } from './node'
 import type { Graph } from './graph'
 
-export const createMockRoot = (graph: Graph) => {
+export const createMockRoot = (graph: Graph): WNode => {
   const root = graph.createNode({
     type: NodeType.Root,
     attrs: {
       name: 'root',
     },
   })
-
-  const CondA = graph.createNode({
-    type: NodeType.Condition,
-    parent: root,
-    attrs: {
-      name: 'Cond A',
-    },
-  })
-  const CondAChild = graph.createNode({
-    parent: CondA,
-    attrs: {
-      name: 'Cond A Child A',
-    },
-  })
-
-  CondAChild.conditions.push(
+  root.addChild(
     graph.createNode({
-      type: NodeType.Condition,
-      parent: CondAChild,
       attrs: {
-        name: 'Cond A Child A Cond A',
-      },
-    }),
-    graph.createNode({
-      type: NodeType.Condition,
-      parent: CondAChild,
-      attrs: {
-        name: 'Cond A Child A Cond B',
+        name: 'Node A',
       },
     })
   )
 
-  root.conditions.push(
-    CondA,
-    graph.createNode({
-      type: NodeType.Condition,
+  const CondB = graph.createCond({
+    parent: root,
+    attrs: {
+      name: 'Cond B',
+    },
+  })
+  root.conditions = [
+    graph.createCond({
       parent: root,
       attrs: {
-        name: 'Cond B',
+        name: 'Cond A',
+      },
+    }),
+    CondB,
+  ]
+
+  CondB.addChild(
+    graph.createNode({
+      attrs: {
+        name: 'Node C',
       },
     })
   )
-
-  root.child = graph.createNode({
-    parent: root,
-    attrs: {
-      name: 'Node A',
-    },
-  })
 
   return root
 }

@@ -6,7 +6,7 @@
       </header>
 
       <main class="py-1 overflow-auto">
-        <ElScrollbar class="workspace-scrollbar">
+        <ElScrollbar>
           <WorkflowWorkspace class="sa-block workspace" />
         </ElScrollbar>
       </main>
@@ -58,10 +58,10 @@ provide(GRAPH_INJECTION_KEY, graph)
   padding: 0.2rem 1.2rem;
   background-color: var(--vp-c-bg-soft);
 }
-
 .workspace {
   padding: 2rem;
   width: fit-content;
+  min-width: 100%;
   height: fit-content;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="node-container">
     <ElButton
-      v-if="!isRoot"
+      v-if="!isRoot && !(hasBranchCond && isCond)"
       title="remove node"
       class="remove-node"
       link
@@ -42,7 +42,7 @@ import {
   CloseSharp,
 } from '@vicons/ionicons5'
 import type { WNode } from '@/SaWorkflow/node'
-import { NodeType } from '@/SaWorkflow/node'
+import { NodeType, isCondNode } from '@/SaWorkflow/node'
 
 const props = defineProps<{
   node: WNode
@@ -54,13 +54,15 @@ const AddBranchIcon = computed(() =>
     : ChevronForwardOutline
 )
 const isRoot = computed(() => props.node.type === NodeType.Root)
+const isCond = computed(() => isCondNode(props.node))
+const hasBranchCond = computed(() => props.node.conditions.length > 0)
 
 const addChild = () => {
   props.node.addChild()
 }
 
 const addBranch = () => {
-  props.node.addBranch()
+  props.node.addCond()
 }
 
 const removeNode = () => {

@@ -21,7 +21,7 @@
         </div>
       </div>
 
-      <EdgeRenderer />
+      <EdgeRenderer v-if="isMultiple" />
     </div>
   </div>
 </template>
@@ -29,11 +29,13 @@
 <script lang="ts" setup>
 import NodeRenderer from './node/index.vue'
 import EdgeRenderer from './edge.vue'
-import type { WCondNode } from '@/SaWorkflow/node'
+import type { WNode } from '@/SaWorkflow/node'
 
-defineProps<{
-  conditions: WCondNode[]
+const props = defineProps<{
+  conditions: WNode[]
 }>()
+
+const isMultiple = computed(() => props.conditions.length > 1)
 </script>
 
 <style lang="scss" setup>
@@ -46,7 +48,6 @@ defineProps<{
   flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
-  min-height: 270px;
   width: 100%;
   flex-shrink: 0;
 }
@@ -59,6 +60,7 @@ defineProps<{
   position: relative;
 }
 .branch {
+  width: min-content;
   position: relative;
   background-color: var(--vp-c-bg-soft);
 
@@ -130,6 +132,7 @@ defineProps<{
   }
   .branch {
     display: flex;
+    width: 100%;
 
     &::before {
       width: 100%;

@@ -1,50 +1,52 @@
 import { cloneDeep } from 'lodash-es'
 import { isNullish } from '@sa/utils'
-import { NodeType, WNode } from './node'
+import { NodeType, WNode, findCondIndex, getNodeTail, isCondNode } from './node'
 import type { DeepPartial } from '@sa/utils'
 import type { InjectionKey, Ref } from 'vue'
-import type { BasicNode, BasicNodeAttributes, WCondNode } from './node'
+import type { BasicNodeAttributes } from './node'
 import type { BasicRecord, BasicRecordStore } from './record'
 
 export const GRAPH_INJECTION_KEY: InjectionKey<Ref<Graph>> = Symbol('graph')
 
-const bindParentChild = (parent: BasicNode, child: BasicNode): void => {
+const bindParentChild = (parent: WNode, child: WNode | null): void => {
   parent.child = child
-  child.parent = parent
+  if (child) child.parent = parent
 }
 
 export namespace Graph {
   export type Direction = 'horizontal' | 'vertical'
   export interface Base {
     /** graph root node, contain all nodes here */
-    root: BasicNode
+    root: WNode
     /** record histories */
     // TODO: history: BasicRecordStore
     /** current selected nodes */
-    selected: BasicNode[]
+    selected: WNode[]
     /** graph display direction, default is vertical */
     direction: Direction
     getNextId(): string
     /** create a new node */
-    createNode(node?: DeepPartial<BasicNode>): BasicNode
+    createNode(node?: DeepPartial<WNode>): WNode
+    /** just create a new node, skip binding parent and child */
+    createNodeOnly(node?: WNode): WNode
     /** add a child and return its parent */
-    addChild(child: BasicNode | undefined, parent?: BasicNode): BasicNode
-    // TODO: addChild(child: BasicNode, parent?: string): BasicNode
+    addChild(parent?: WNode, child?: WNode): WNode
+    // TODO: addChild(parent?: string, child?: WNode): WNode
     // add a branch on node (not root)
-    addBranch(node: BasicNode): void
+    addCond(parent?: WNode, cond?: WNode): void
     // remove a node
-    removeNode(node: BasicNode): void
+    removeNode(node: WNode): void
 
     updateElemData(
       id: string,
-      data: Partial<BasicNode['attrs']>,
+      data: Partial<WNode['attrs']>,
       needRecord?: boolean
-    ): BasicNode | undefined
+    ): WNode | undefined
     updateElemData(
-      element: BasicNode,
-      data: Partial<BasicNode['attrs']>,
+      element: WNode,
+      data: Partial<WNode['attrs']>,
       needRecord?: boolean
-    ): BasicNode | undefined
+    ): WNode | undefined
     historyTo(to: number): void
     historyTo(to: BasicRecord): void
   }
@@ -76,10 +78,10 @@ export class Graph implements Graph.Base {
     return nextId
   }
 
-  createNode(
+  createNodeOnly(
     node?: Partial<Omit<WNode, 'attrs'>> & DeepPartial<Pick<WNode, 'attrs'>>
   ): WNode {
-    const createdNode = new WNode({
+    return new WNode({
       graph: node?.graph ?? this,
       type: node?.type ?? NodeType.Node,
       parent: node?.parent,
@@ -91,20 +93,39 @@ export class Graph implements Graph.Base {
         name: node?.attrs?.name ?? 'New Node',
       },
     })
+  }
 
-    if (node?.parent && node.type !== NodeType.Condition)
-      bindParentChild(node.parent, createdNode)
+  createNode(
+    node?: Partial<Omit<WNode, 'attrs'>> & DeepPartial<Pick<WNode, 'attrs'>>
+  ): WNode {
+    const createdNode = this.createNodeOnly(node)
+
+    if (node?.parent) bindParentChild(node.parent, createdNode)
     if (node?.child) bindParentChild(createdNode, node.child)
 
     return createdNode
   }
 
-  addChild(child: WNode | undefined, parent: WNode): WNode {
-    if (isNullish(child)) child = this.createNode()
+  createCond(
+    node?: Partial<Omit<WNode, 'attrs'>> & DeepPartial<Pick<WNode, 'attrs'>>
+  ): WNode {
+    const createdNode = this.createNodeOnly(node)
+
+    if (node?.child) bindParentChild(createdNode, node.child)
+
+    return createdNode
+  }
+
+  addChild(parent: WNode, child?: WNode): WNode {
+    if (!child) child = this.createNode()
 
     if (parent.conditions) {
       child.conditions = parent.conditions
       parent.conditions = []
+
+      for (const cond of child.conditions) {
+        cond.parent = child
+      }
     }
 
     if (!parent.child) {
@@ -118,22 +139,25 @@ export class Graph implements Graph.Base {
     return parent
   }
 
-  addBranch(node: WNode): void {
-    if (!node.parent) return
+  addCond(node: WNode, cond?: WNode): void {
+    const parent = node.parent
+    if (!parent) return
+    if (!cond) cond = this.createCond()
 
-    if (node.parent.conditions?.length) {
-      node.parent.conditions.splice(
-        node.conditions.findIndex((cond) => cond.attrs.id === node.attrs.id),
+    cond.parent = parent
+
+    if (parent.conditions?.length) {
+      parent.conditions.splice(
+        parent.conditions.findIndex((cond) => cond.attrs.id === node.attrs.id) +
+          1,
         0,
-        this.createNode({ type: NodeType.Condition, parent: node.parent })
+        cond
       )
     } else {
-      node.parent.child = node.child
-      node.type = NodeType.Condition
-      node.parent.conditions = [
-        node,
-        this.createNode({ type: NodeType.Condition, parent: node.parent }),
-      ]
+      const nodeChild = node.child
+      node.child = null
+      bindParentChild(parent, nodeChild)
+      parent.conditions = [node, cond]
     }
   }
 
@@ -144,32 +168,52 @@ export class Graph implements Graph.Base {
     const parent = node.parent
     if (!parent) return
 
-    if (node.type === NodeType.Condition) {
-      const index = parent.conditions.findIndex(
-        (cond) => cond.attrs.id === node.attrs.id
-      )
-      parent.conditions.splice(index, 1)
-      return
+    const index = findCondIndex(node)
+
+    if (index > -1) {
+      if (node.child) {
+        parent.conditions.splice(index, 1, node.child)
+        node.child.parent = parent
+      } else {
+        parent.conditions.splice(index, 1)
+      }
+
+      if (parent.conditions.length === 1) {
+        const headCond = parent.conditions[0]
+        parent.conditions = []
+        const tail = getNodeTail(headCond)
+
+        const parentChild = parent.child
+        bindParentChild(parent, headCond)
+        bindParentChild(tail, parentChild)
+      }
+    } else {
+      bindParentChild(parent, node.child)
     }
 
-    parent.child = null
+    if (node.conditions.length) {
+      parent.conditions = [...node.conditions]
+      for (const cond of parent.conditions) {
+        cond.parent = parent
+      }
+    }
   }
 
   updateElemData(
     id: string,
     data: Partial<BasicNodeAttributes>,
     needRecord?: boolean | undefined
-  ): BasicNode | undefined
+  ): WNode | undefined
   updateElemData(
-    element: BasicNode,
+    element: WNode,
     data: Partial<BasicNodeAttributes>,
     needRecord?: boolean | undefined
-  ): BasicNode | undefined
+  ): WNode | undefined
   updateElemData(
     element: unknown,
     data: unknown,
     needRecord?: unknown
-  ): BasicNode | undefined {
+  ): WNode | undefined {
     throw new Error('Method not implemented.')
   }
   historyTo(to: number): void

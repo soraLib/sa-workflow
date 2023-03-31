@@ -25,13 +25,6 @@ import type { CSSProperties } from 'vue'
 export enum NodeType {
   /** tree root */
   Root = 1,
-  /**
-   * @deprecated
-   *
-   * condition node, used at the beginning of a branch
-   *
-   */
-  Condition, // TODO: remove
   /** normal node */
   Node,
 }
@@ -47,16 +40,18 @@ export interface BasicNodeAttributes {
 }
 
 /** basic node */
-export interface BasicNode {
-  type: NodeType
-  parent: BasicNode | null
-  child: BasicNode | null
-  attrs: BasicNodeAttributes
-  conditions?: WCondNode[]
-  graph: Graph
-  addChild: (child?: WNode) => WNode
-  addBranch: () => void
-  remove: () => void
+export namespace WNode {
+  export interface Base {
+    type: NodeType
+    parent: WNode | null | undefined
+    child: WNode | null | undefined
+    attrs: BasicNodeAttributes
+    conditions?: WNode[]
+    graph: Graph
+    addChild: (child?: WNode) => WNode
+    addCond: () => void
+    remove: () => void
+  }
 }
 
 export type WNodeAttributes = BasicNodeAttributes /* TODO: & */
@@ -64,12 +59,12 @@ export type WNodeAttributes = BasicNodeAttributes /* TODO: & */
 /**
  * Workflow Node
  */
-export class WNode implements BasicNode {
+export class WNode implements WNode.Base {
   type: NodeType
   parent: WNode | null
   child: WNode | null
   attrs: WNodeAttributes
-  conditions: WCondNode[]
+  conditions: WNode[]
   graph: Graph
 
   constructor(
@@ -84,11 +79,11 @@ export class WNode implements BasicNode {
   }
 
   addChild(child?: WNode): WNode {
-    return this.graph.addChild(child, this)
+    return this.graph.addChild(this, child)
   }
 
-  addBranch(): void {
-    return this.graph.addBranch(this)
+  addCond(cond?: WNode): void {
+    return this.graph.addCond(this, cond)
   }
 
   remove(): void {
@@ -96,9 +91,22 @@ export class WNode implements BasicNode {
   }
 }
 
+export const getNodeTail = (node: WNode): WNode => {
+  if (!node.child) return node
+
+  return getNodeTail(node.child)
+}
+
+export const findCondIndex = (node: WNode) => {
+  if (!node.parent) return -1
+
+  return node.parent.conditions.findIndex(
+    (cond) => cond.attrs.id === node.attrs.id
+  )
+}
 /**
- * Workflow Condition Node
+ * is Workflow Condition Node
  */
-export class WCondNode extends WNode {
-  type = NodeType.Condition
+export const isCondNode = (node: WNode): boolean => {
+  return findCondIndex(node) > -1
 }

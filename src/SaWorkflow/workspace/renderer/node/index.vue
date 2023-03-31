@@ -1,12 +1,12 @@
 <template>
-  <div :class="['node-wrapper', { 'condition-node-wrapper': isCondNode }]">
+  <div :class="['node-wrapper', { 'condition-node-wrapper': isCond }]">
     <NodeWrapper :node="node">
       <div :class="['node', { 'begin-node': isBeginNode }]">
         {{ node.attrs.id }} : {{ node.attrs.name }}
       </div>
     </NodeWrapper>
 
-    <EdgeRenderer v-if="!isCondNode" />
+    <EdgeRenderer v-if="!isCond" />
   </div>
 
   <BranchRenderer v-if="node.conditions.length" :conditions="node.conditions" />
@@ -17,9 +17,9 @@
 <script lang="ts" setup>
 import EdgeRenderer from '../edge.vue'
 import BranchRenderer from '../branch.vue'
+import { isCondNode } from '../../../node'
 import NodeWrapper from './container.vue'
 import type { WNode } from '@/SaWorkflow/node'
-import { NodeType } from '@/SaWorkflow/node'
 
 defineOptions({
   name: 'NodeRenderer',
@@ -30,7 +30,7 @@ const props = defineProps<{
 }>()
 
 const isBeginNode = computed(() => !props.node.parent)
-const isCondNode = computed(() => props.node.type === NodeType.Condition)
+const isCond = computed(() => isCondNode(props.node))
 </script>
 
 <style lang="scss" scoped>
@@ -57,6 +57,7 @@ const isCondNode = computed(() => props.node.type === NodeType.Condition)
   border-radius: 8px;
   cursor: pointer;
   padding: 4px 12px;
+  z-index: 1;
 
   &:not(.begin-node)::before {
     content: '';
@@ -77,10 +78,10 @@ const isCondNode = computed(() => props.node.type === NodeType.Condition)
 
 // =========== condition node ===============
 .condition-node-wrapper {
-  min-height: 220px;
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 216px;
 }
 // ==========================================
 
