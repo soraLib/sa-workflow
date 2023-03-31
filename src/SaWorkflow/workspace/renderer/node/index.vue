@@ -1,5 +1,6 @@
 <template>
-  <div :class="['node-wrapper', { 'condition-node-wrapper': isCond }]">
+  <BranchRenderer v-if="isRoute(node)" :route="node" />
+  <div v-else :class="['node-wrapper', { 'condition-node-wrapper': isCond }]">
     <NodeWrapper :node="node">
       <div :class="['node', { 'is-root': isRoot }]">
         {{ node.attrs.id }} : {{ node.attrs.name }}
@@ -9,8 +10,6 @@
     <EdgeRenderer v-if="!isCond" />
   </div>
 
-  <BranchRenderer v-if="node.conditions.length" :conditions="node.conditions" />
-
   <NodeRenderer v-if="node.child" :node="node.child" />
 </template>
 
@@ -19,7 +18,7 @@ import EdgeRenderer from '../edge.vue'
 import BranchRenderer from '../branch.vue'
 import NodeWrapper from './container.vue'
 import type { WNode } from '@/SaWorkflow/node'
-import { NodeType, isCondNode } from '@/SaWorkflow/node'
+import { NodeType, isRoute, isRouteCond } from '@/SaWorkflow/node'
 
 defineOptions({
   name: 'NodeRenderer',
@@ -30,7 +29,7 @@ const props = defineProps<{
 }>()
 
 const isRoot = computed(() => props.node.type === NodeType.Root)
-const isCond = computed(() => isCondNode(props.node))
+const isCond = computed(() => isRouteCond(props.node))
 </script>
 
 <style lang="scss" scoped>

@@ -17,29 +17,24 @@ export const createMockRoot = (graph: Graph): WNode => {
     })
   )
 
-  const CondB = graph.createCond({
-    parent: root,
+  const routeA = graph.createRoute({
+    type: NodeType.Route,
     attrs: {
-      name: 'Cond B',
+      name: 'Route A',
     },
   })
-  root.conditions = [
-    graph.createCond({
-      parent: root,
-      attrs: {
-        name: 'Cond A',
-      },
+  routeA.conditions = [
+    graph.createNode({
+      parent: routeA,
+      attrs: { name: 'Route A Child A' },
     }),
-    CondB,
+    graph.createNode({
+      parent: routeA,
+      attrs: { name: 'Route A Child B' },
+    }),
   ]
 
-  CondB.addChild(
-    graph.createNode({
-      attrs: {
-        name: 'Node C',
-      },
-    })
-  )
+  root.addChild(routeA)
 
   return root
 }
