@@ -107,8 +107,9 @@ export class Graph implements Graph.Base {
   ): WBase {
     const createdNode = this.createNodeOnly(node)
 
-    if (node?.parent) bindParentChild(node.parent, createdNode)
-    if (node?.child) bindParentChild(createdNode, node.child)
+    // TODO:
+    // if (node?.parent) bindParentChild(node.parent, createdNode)
+    // if (node?.child) bindParentChild(createdNode, node.child)
 
     return createdNode
   }

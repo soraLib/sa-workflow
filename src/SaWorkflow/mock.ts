@@ -23,11 +23,32 @@ export const createMockRoot = (graph: Graph): WNode => {
       name: 'Route A',
     },
   })
-  routeA.conditions = [
+
+  const routeAChildA = graph.createNode({
+    parent: routeA,
+    attrs: { name: 'Route A Child A' },
+  })
+
+  const deepRoute = graph.createRoute({
+    type: NodeType.Route,
+    parent: routeAChildA,
+    attrs: {
+      name: 'Deep Route',
+    },
+  })
+  deepRoute.conditions = [
     graph.createNode({
-      parent: routeA,
-      attrs: { name: 'Route A Child A' },
+      parent: deepRoute,
+      attrs: { name: 'Deep Route Child A' },
     }),
+    graph.createNode({
+      parent: deepRoute,
+      attrs: { name: 'Deep Route Child B' },
+    }),
+  ]
+
+  routeA.conditions = [
+    routeAChildA,
     graph.createNode({
       parent: routeA,
       attrs: { name: 'Route A Child B' },

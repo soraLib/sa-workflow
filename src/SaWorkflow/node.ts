@@ -127,3 +127,17 @@ export const isRouteCond = (node: WNode): boolean => {
 }
 
 export type WNode = WBase | WRoute
+
+export const getNodeWidth = (node: WNode | null): number => {
+  if (!node) return 1
+
+  let max = getNodeWidth(node.child)
+  if (isRoute(node)) {
+    max = Math.max(
+      max,
+      node.conditions.reduce((sum, cond) => sum + getNodeWidth(cond), 0)
+    )
+  }
+
+  return max
+}

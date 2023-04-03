@@ -15,7 +15,9 @@
 
     <NodeWrapper :node="node">
       <div :class="['node', { 'is-root': isRoot }]">
-        {{ node.attrs.id }} : {{ node.attrs.name }}
+        <div>id: {{ node.attrs.id }}</div>
+        <div>name: {{ node.attrs.name }}</div>
+        <div>nodeWidth : {{ nodeWidth }}</div>
       </div>
     </NodeWrapper>
 
@@ -34,6 +36,7 @@ import type { WNode } from '@/SaWorkflow/node'
 import {
   NodeType,
   findCondIndex,
+  getNodeWidth,
   isRoute,
   isRouteCond,
 } from '@/SaWorkflow/node'
@@ -51,6 +54,8 @@ const isCond = computed(() => isRouteCond(props.node))
 const condIndex = computed(() => findCondIndex(props.node))
 
 const handleSwap = () => props.node.swapWithPrevious()
+
+const nodeWidth = computed(() => getNodeWidth(props.node))
 </script>
 
 <style lang="scss" scoped>
