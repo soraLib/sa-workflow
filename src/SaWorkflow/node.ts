@@ -5,17 +5,15 @@ import type { CSSProperties } from 'vue'
 /**
  * ========= tree example ===========
  * ==================================
- *            root
+ *             root
+ *              |
+ *            route
  *            /   \
- *           if   if
  *           |     |
- *          node  node
+ *          node route
  *           |    / \
- *           |  if   if
- *           |   |   |
  *           | node  node
  *           |    \ /
- *           |     |
  *            \   /
  *             end
  * ==================================
@@ -73,6 +71,16 @@ export class WBase {
 
   remove(): void {
     this.graph.removeNode(this)
+  }
+
+  swapWithPrevious(): void {
+    const parent = this.parent
+    if (!parent || !isRoute(parent)) return
+
+    const index = findCondIndex(this)
+    if (index === 0) return
+
+    this.graph.swap(parent, index, index - 1)
   }
 }
 

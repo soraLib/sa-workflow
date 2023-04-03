@@ -38,11 +38,12 @@ export namespace Graph {
     /** add a child and return its parent */
     addChild(parent?: WNode, child?: WNode): WNode
     // TODO: addChild(parent?: string, child?: WNode): WNode
-    // add a branch on node (not root)
+    /** add a branch on node (not root) */
     addCond(parent?: WNode, cond?: WNode): void
-    // remove a node
+    /** remove a node */
     removeNode(node: WNode): void
-
+    /** swap the two given positions of child Node under a Route */
+    swap(route: WRoute, pos1: number, pos2: number): void
     updateElemData(
       id: string,
       data: Partial<WNode['attrs']>,
@@ -207,6 +208,14 @@ export class Graph implements Graph.Base {
     } else {
       bindParentChild(parent, node.child)
     }
+  }
+
+  swap(route: WRoute, pos1: number, pos2: number): void {
+    if (!route.conditions[pos1] || !route.conditions[pos2]) return
+
+    const temp = route.conditions[pos1]
+    route.conditions[pos1] = route.conditions[pos2]
+    route.conditions[pos2] = temp
   }
 
   updateElemData(

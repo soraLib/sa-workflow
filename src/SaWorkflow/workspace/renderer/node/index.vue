@@ -1,6 +1,18 @@
 <template>
   <BranchRenderer v-if="isRoute(node)" :route="node" />
   <div v-else :class="['node-wrapper', { 'condition-node-wrapper': isCond }]">
+    <ElButton
+      v-if="condIndex > 0"
+      title="swap nodes"
+      class="nodes-swapper"
+      link
+      @click="handleSwap"
+    >
+      <ElIcon :size="20">
+        <SwapHorizontalOutline />
+      </ElIcon>
+    </ElButton>
+
     <NodeWrapper :node="node">
       <div :class="['node', { 'is-root': isRoot }]">
         {{ node.attrs.id }} : {{ node.attrs.name }}
@@ -14,11 +26,17 @@
 </template>
 
 <script lang="ts" setup>
+import { SwapHorizontalOutline } from '@vicons/ionicons5'
 import EdgeRenderer from '../edge.vue'
 import BranchRenderer from '../branch.vue'
 import NodeWrapper from './container.vue'
 import type { WNode } from '@/SaWorkflow/node'
-import { NodeType, isRoute, isRouteCond } from '@/SaWorkflow/node'
+import {
+  NodeType,
+  findCondIndex,
+  isRoute,
+  isRouteCond,
+} from '@/SaWorkflow/node'
 
 defineOptions({
   name: 'NodeRenderer',
@@ -30,6 +48,9 @@ const props = defineProps<{
 
 const isRoot = computed(() => props.node.type === NodeType.Root)
 const isCond = computed(() => isRouteCond(props.node))
+const condIndex = computed(() => findCondIndex(props.node))
+
+const handleSwap = () => props.node.swapWithPrevious()
 </script>
 
 <style lang="scss" scoped>
@@ -41,8 +62,14 @@ const isCond = computed(() => isRouteCond(props.node))
   justify-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
-  padding: 0 50px;
   position: relative;
+}
+.nodes-swapper {
+  position: absolute;
+  right: calc(100% - 18px);
+  width: 36px;
+  height: 36px;
+  z-index: 1;
 }
 .node {
   display: inline-flex;
@@ -85,10 +112,15 @@ const isCond = computed(() => isRouteCond(props.node))
 
 .direction-horizontal {
   .node-wrapper {
-    padding: 50px 0;
     flex-direction: row;
     flex-wrap: nowrap;
     width: fit-content;
+  }
+
+  .nodes-swapper {
+    right: auto;
+    bottom: calc(100% - 18px);
+    transform: rotate(90deg);
   }
   .node {
     flex-direction: row;

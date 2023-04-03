@@ -76,6 +76,7 @@ const removeNode = () => {
 
 <style lang="scss" scoped>
 $half: 16px;
+$margin: 50px;
 
 .node-container {
   position: relative;
@@ -83,6 +84,7 @@ $half: 16px;
   background-color: var(--vp-node-bg-color);
   border-radius: 8px;
   transition: border-color 0.28s ease-in;
+  margin: 0 $margin;
 
   .button-basic {
     opacity: 0;
@@ -119,6 +121,8 @@ $half: 16px;
 
 // ========= direction horizontal ===========
 .direction-horizontal .node-container {
+  margin: $margin 0;
+
   .add-condition {
     left: calc(50% - $half);
     top: calc(100% - $half);
