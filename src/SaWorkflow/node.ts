@@ -73,6 +73,10 @@ export class WBase {
     this.graph.removeNode(this)
   }
 
+  select(): void {
+    this.graph.select(this)
+  }
+
   swapWithPrevious(): void {
     const parent = this.parent
     if (!parent || !isRoute(parent)) return
@@ -81,6 +85,16 @@ export class WBase {
     if (index === 0) return
 
     this.graph.swap(parent, index, index - 1)
+  }
+
+  swapWithNext(): void {
+    const parent = this.parent
+    if (!parent || !isRoute(parent)) return
+
+    const index = findCondIndex(this)
+    if (index === parent.conditions.length - 1) return
+
+    this.graph.swap(parent, index, index + 1)
   }
 }
 
@@ -104,6 +118,12 @@ export class WRoute extends WBase {
 
     this.conditions = options.conditions ?? []
   }
+}
+
+export const isNodeSelected = (node: WNode): boolean => {
+  return node.graph.selected.some(
+    (selected) => selected.attrs.id === node.attrs.id
+  )
 }
 
 export const findCondIndex = (node: WNode) => {

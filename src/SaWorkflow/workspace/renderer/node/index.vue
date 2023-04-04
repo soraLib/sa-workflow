@@ -1,23 +1,53 @@
 <template>
   <BranchRenderer v-if="isRoute(node)" :route="node" />
-  <div v-else :class="['node-wrapper', { 'condition-node-wrapper': isCond }]">
-    <ElButton
-      v-if="condIndex > 0"
-      title="swap nodes"
-      class="nodes-swapper"
-      link
-      @click="handleSwap"
-    >
-      <ElIcon :size="20">
-        <SwapHorizontalOutline />
-      </ElIcon>
-    </ElButton>
-
+  <div
+    v-else
+    :class="['node-wrapper', { 'condition-node-wrapper': isCond }]"
+    @click="handleSelect"
+  >
     <NodeWrapper :node="node">
       <div :class="['node', { 'is-root': isRoot }]">
-        <div>id: {{ node.attrs.id }}</div>
-        <div>name: {{ node.attrs.name }}</div>
-        <div>nodeWidth : {{ nodeWidth }}</div>
+        <div
+          :class="[
+            'previous-node-swapper-wrapper',
+            { 'has-previous': showPreviousSwapper },
+          ]"
+        >
+          <ElButton
+            v-if="showPreviousSwapper"
+            title="swap nodes"
+            class="nodes-swapper"
+            link
+            @click.stop="handleSwapWithPrevious"
+          >
+            <ElIcon :size="12">
+              <SwapIcon />
+            </ElIcon>
+          </ElButton>
+        </div>
+        <div class="node-content">
+          <div>id: {{ node.attrs.id }}</div>
+          <div>name: {{ node.attrs.name }}</div>
+          <div>nodeWidth : {{ nodeWidth }}</div>
+        </div>
+        <div
+          :class="[
+            'next-node-swapper-wrapper',
+            { 'has-next': showNextNodeSwapper },
+          ]"
+        >
+          <ElButton
+            v-if="showNextNodeSwapper"
+            title="swap nodes"
+            class="nodes-swapper"
+            link
+            @click.stop="handleSwapWithNext"
+          >
+            <ElIcon :size="12">
+              <SwapIcon />
+            </ElIcon>
+          </ElButton>
+        </div>
       </div>
     </NodeWrapper>
 
@@ -28,7 +58,7 @@
 </template>
 
 <script lang="ts" setup>
-import { SwapHorizontalOutline } from '@vicons/ionicons5'
+import { SwapHorizontalOutline, SwapVerticalOutline } from '@vicons/ionicons5'
 import EdgeRenderer from '../edge.vue'
 import BranchRenderer from '../branch.vue'
 import NodeWrapper from './container.vue'
@@ -52,13 +82,28 @@ const props = defineProps<{
 const isRoot = computed(() => props.node.type === NodeType.Root)
 const isCond = computed(() => isRouteCond(props.node))
 const condIndex = computed(() => findCondIndex(props.node))
-
-const handleSwap = () => props.node.swapWithPrevious()
-
 const nodeWidth = computed(() => getNodeWidth(props.node))
+const SwapIcon = computed(() =>
+  props.node.graph.direction === 'horizontal'
+    ? SwapVerticalOutline
+    : SwapHorizontalOutline
+)
+
+const showNextNodeSwapper = computed(() => {
+  if (!props.node.parent || !isRoute(props.node.parent)) return false
+
+  return condIndex.value < props.node.parent.conditions.length - 1
+})
+const showPreviousSwapper = computed(() => condIndex.value > 0)
+
+const handleSelect = () => props.node.select()
+const handleSwapWithPrevious = () => props.node.swapWithPrevious()
+const handleSwapWithNext = () => props.node.swapWithNext()
 </script>
 
 <style lang="scss" scoped>
+@import '../var.scss';
+
 .node-wrapper {
   width: 100%;
   display: inline-flex;
@@ -69,28 +114,50 @@ const nodeWidth = computed(() => getNodeWidth(props.node))
   flex-wrap: wrap;
   position: relative;
 }
-.nodes-swapper {
-  position: absolute;
-  right: calc(100% - 18px);
-  width: 36px;
-  height: 36px;
-  z-index: 1;
-}
+
 .node {
-  display: inline-flex;
-  flex-direction: column;
+  display: flex;
+  height: 100%;
   position: relative;
   width: 220px;
-  min-height: 72px;
-  flex-shrink: 0;
   cursor: pointer;
-  padding: 4px 12px;
   z-index: 1;
+  overflow: hidden;
+
+  .node-content {
+    flex-grow: 1;
+    padding: 4px;
+  }
+
+  .previous-node-swapper-wrapper,
+  .next-node-swapper-wrapper {
+    width: 14px;
+
+    .nodes-swapper {
+      transition: opacity 0.28s ease-in;
+      border-radius: 0;
+      opacity: 0;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      color: white;
+    }
+
+    &.has-previous,
+    &.has-next {
+      &:hover .nodes-swapper {
+        opacity: 1;
+        background-color: var(--vp-c-brand);
+      }
+    }
+  }
 
   &:not(.is-root)::before {
     content: '';
     position: absolute;
-    top: -13px;
+    top: -14px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;
@@ -109,7 +176,7 @@ const nodeWidth = computed(() => getNodeWidth(props.node))
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 216px;
+  min-height: calc($node-height + $edge-length * 2);
 }
 // ==========================================
 
@@ -122,17 +189,23 @@ const nodeWidth = computed(() => getNodeWidth(props.node))
     width: fit-content;
   }
 
-  .nodes-swapper {
-    right: auto;
-    bottom: calc(100% - 18px);
-    transform: rotate(90deg);
-  }
   .node {
-    flex-direction: row;
+    flex-direction: column;
+
+    .node-content {
+      padding: 0 18px;
+    }
+
+    .previous-node-swapper-wrapper,
+    .next-node-swapper-wrapper {
+      width: 100%;
+      height: 14px;
+      line-height: 12px;
+    }
 
     &:not(.is-root)::before {
       top: calc(50% - 6px);
-      left: -13px;
+      left: -14px;
       transform: rotate(-90deg);
       width: 0;
       height: 4px;
@@ -141,6 +214,7 @@ const nodeWidth = computed(() => getNodeWidth(props.node))
 
   .condition-node-wrapper {
     min-width: 370px;
+    min-height: calc($node-height + $margin * 2);
   }
 }
 

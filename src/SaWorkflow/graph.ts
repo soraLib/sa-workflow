@@ -7,7 +7,7 @@ import {
   isRoute,
   isRouteCond,
 } from './node'
-import type { DeepPartial } from '@sa/utils'
+import type { Arrayable, DeepPartial } from '@sa/utils'
 import type { InjectionKey, Ref } from 'vue'
 import type { BasicNodeAttributes, WBase, WNode } from './node'
 import type { BasicRecord, BasicRecordStore } from './record'
@@ -42,6 +42,7 @@ export namespace Graph {
     addCond(parent?: WNode, cond?: WNode): void
     /** remove a node */
     removeNode(node: WNode): void
+    select(node: Arrayable<WNode>): void
     /** swap the two given positions of child Node under a Route */
     swap(route: WRoute, pos1: number, pos2: number): void
     updateElemData(
@@ -209,6 +210,10 @@ export class Graph implements Graph.Base {
     } else {
       bindParentChild(parent, node.child)
     }
+  }
+
+  select(node: Arrayable<WNode>): void {
+    this.selected = Array.isArray(node) ? [...node] : [node]
   }
 
   swap(route: WRoute, pos1: number, pos2: number): void {

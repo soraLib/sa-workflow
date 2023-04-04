@@ -5,13 +5,15 @@
 </template>
 
 <style lang="scss" scoped>
+@import 'var.scss';
+
 .edge-wrapper {
   width: 220px;
   display: inline-flex;
   flex-shrink: 0;
   position: relative;
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
     top: 0;
@@ -25,7 +27,7 @@
   }
 
   .edge {
-    height: 72px;
+    height: $edge-length;
   }
 }
 
@@ -33,7 +35,7 @@
   .edge-wrapper {
     width: 72px;
 
-    &:before {
+    &::before {
       margin: auto;
       height: 2px;
       width: 100%;

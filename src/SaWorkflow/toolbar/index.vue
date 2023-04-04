@@ -7,6 +7,7 @@
         :active-value="activeDirection"
         :inactive-value="inactiveDirection"
         :model-value="direction"
+        active-color="#5856d5"
         @update:model-value="handleDirectionChange"
       />
       <span>vertical</span>

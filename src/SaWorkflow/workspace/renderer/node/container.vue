@@ -1,5 +1,5 @@
 <template>
-  <div class="node-container">
+  <div :class="['node-container', { 'is-selected': isSelected }]">
     <ElButton
       v-if="!isRoot && !(isCond && isChildRoute)"
       title="remove node"
@@ -44,7 +44,12 @@ import {
   CloseSharp,
 } from '@vicons/ionicons5'
 import type { WNode } from '@/SaWorkflow/node'
-import { NodeType, isRoute, isRouteCond } from '@/SaWorkflow/node'
+import {
+  NodeType,
+  isNodeSelected,
+  isRoute,
+  isRouteCond,
+} from '@/SaWorkflow/node'
 
 const props = defineProps<{
   node: WNode
@@ -60,6 +65,7 @@ const isCond = computed(() => isRouteCond(props.node))
 const isChildRoute = computed(
   () => props.node.child && isRoute(props.node.child)
 )
+const isSelected = computed(() => isNodeSelected(props.node))
 
 const addChild = () => props.node.addChild()
 const addBranch = () => props.node.addCond()
@@ -68,20 +74,23 @@ const removeNode = () => props.node.remove()
 
 <style lang="scss" scoped>
 @use 'button.scss';
+@import '../var.scss';
+
 $half: 16px;
-$margin: 50px;
 
 .node-container {
   position: relative;
-  border: 1px solid var(--vp-c-border);
+  border: 2px solid var(--vp-c-border);
   background-color: var(--vp-node-bg-color);
   border-radius: 8px;
   transition: border-color 0.28s ease-in;
   margin: 0 $margin;
 
+  &.is-selected,
   &:hover {
     border-color: var(--vp-c-brand);
-
+  }
+  &:hover {
     .button-basic {
       opacity: 1;
     }
@@ -89,14 +98,34 @@ $margin: 50px;
 
   .add-condition {
     @extend .button-basic;
-    right: -$half;
+    right: -$margin - $half;
     top: calc(50% - $half);
+
+    &::before {
+      content: '';
+      position: absolute;
+      z-index: 1;
+      left: calc(-50% - 4px);
+      width: $margin * 0.5;
+      height: 2px;
+      background-color: var(--vp-c-brand);
+    }
   }
 
   .add-child {
     @extend .button-basic;
-    bottom: -$half;
+    bottom: -$margin - $half;
     left: calc(50% - $half);
+
+    &::before {
+      content: '';
+      position: absolute;
+      z-index: 1;
+      top: calc(-50% - 4px);
+      width: 2px;
+      height: $margin * 0.5;
+      background-color: var(--vp-c-brand);
+    }
   }
 
   .remove-node {
@@ -111,12 +140,26 @@ $margin: 50px;
 
   .add-condition {
     left: calc(50% - $half);
-    top: calc(100% - $half);
+    top: calc(100% + $margin - $half);
+
+    &::before {
+      width: 2px;
+      height: $margin * 0.5;
+      left: unset;
+      top: calc(-50% - 4px);
+    }
   }
 
   .add-child {
-    left: calc(100% - $half);
+    left: calc(100% - $half + $margin);
     top: calc(50% - $half);
+
+    &::before {
+      width: $margin * 0.5;
+      height: 2px;
+      top: unset;
+      left: calc(-50% - 4px);
+    }
   }
 }
 // ==========================================

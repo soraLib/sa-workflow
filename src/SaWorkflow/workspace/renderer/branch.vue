@@ -50,6 +50,7 @@ const addChild = () => props.route.addChild()
 
 <style lang="scss" setup>
 @use './node/button.scss';
+@import 'var.scss';
 
 .branch-wrapper {
   display: inline-flex;
@@ -66,7 +67,7 @@ const addChild = () => props.route.addChild()
 
   .add-child {
     @extend .button-basic;
-    bottom: 56px;
+    bottom: $margin * 0.5;
 
     &:hover {
       opacity: 1;
@@ -144,6 +145,11 @@ const addChild = () => props.route.addChild()
     min-width: 270px;
     flex-direction: row;
     flex-wrap: nowrap;
+
+    .add-child {
+      bottom: unset;
+      right: $margin * 0.5;
+    }
   }
   .branch-content {
     flex-direction: column;
