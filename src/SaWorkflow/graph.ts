@@ -219,7 +219,6 @@ export class Graph implements Graph.Base {
   }
 
   select(node: Arrayable<WNode>): void {
-    console.log('seclect', node)
     this.selected = Array.isArray(node) ? [...node] : [node]
   }
 

@@ -134,6 +134,7 @@ const handleSwapWithNext = () => props.node.swapWithNext()
   .previous-node-swapper-wrapper,
   .next-node-swapper-wrapper {
     width: 14px;
+    overflow: hidden;
 
     .nodes-swapper {
       transition: opacity 0.28s ease-in;
@@ -145,6 +146,8 @@ const handleSwapWithNext = () => props.node.swapWithNext()
       height: 100%;
       border: none;
       color: white;
+      background-color: var(--vp-c-brand);
+      vertical-align: baseline;
     }
 
     &.has-previous,
@@ -154,6 +157,12 @@ const handleSwapWithNext = () => props.node.swapWithNext()
         background-color: var(--vp-c-brand);
       }
     }
+  }
+  .previous-node-swapper-wrapper {
+    border-radius: 4px 0 0 4px;
+  }
+  .next-node-swapper-wrapper {
+    border-radius: 0 4px 4px 0;
   }
 
   &:not(.is-root)::before {
@@ -202,7 +211,13 @@ const handleSwapWithNext = () => props.node.swapWithNext()
     .next-node-swapper-wrapper {
       width: 100%;
       height: 14px;
-      line-height: 12px;
+      line-height: 14px;
+    }
+    .previous-node-swapper-wrapper {
+      border-radius: 4px 4px 0 0;
+    }
+    .next-node-swapper-wrapper {
+      border-radius: 0 0 4px 4px;
     }
 
     &:not(.is-root)::before {
