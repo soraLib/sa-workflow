@@ -1,0 +1,7 @@
+.button-basic {
+  opacity: 0;
+  width: fit-content;
+  position: absolute;
+  z-index: 3;
+  transition: opacity 0.28s ease-in;
+}

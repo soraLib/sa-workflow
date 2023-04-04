@@ -21,22 +21,36 @@
         </div>
       </div>
 
+      <ElButton
+        title="add child node"
+        class="add-child"
+        color="#5856D5"
+        circle
+        :icon="Add"
+        @click="addChild"
+      />
+
       <EdgeRenderer />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { Add } from '@vicons/ionicons5'
 import NodeRenderer from './node/index.vue'
 import EdgeRenderer from './edge.vue'
 import type { WRoute } from '@/SaWorkflow/node'
 
-defineProps<{
+const props = defineProps<{
   route: WRoute
 }>()
+
+const addChild = () => props.route.addChild()
 </script>
 
 <style lang="scss" setup>
+@use './node/button.scss';
+
 .branch-wrapper {
   display: inline-flex;
   width: 100%;
@@ -48,6 +62,16 @@ defineProps<{
   align-items: center;
   width: 100%;
   flex-shrink: 0;
+  position: relative;
+
+  .add-child {
+    @extend .button-basic;
+    bottom: 56px;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 .branch-content {
   display: flex;

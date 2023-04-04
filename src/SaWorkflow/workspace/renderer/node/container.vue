@@ -61,20 +61,13 @@ const isChildRoute = computed(
   () => props.node.child && isRoute(props.node.child)
 )
 
-const addChild = () => {
-  props.node.addChild()
-}
-
-const addBranch = () => {
-  props.node.addCond()
-}
-
-const removeNode = () => {
-  props.node.remove()
-}
+const addChild = () => props.node.addChild()
+const addBranch = () => props.node.addCond()
+const removeNode = () => props.node.remove()
 </script>
 
 <style lang="scss" scoped>
+@use 'button.scss';
 $half: 16px;
 $margin: 50px;
 
@@ -86,13 +79,6 @@ $margin: 50px;
   transition: border-color 0.28s ease-in;
   margin: 0 $margin;
 
-  .button-basic {
-    opacity: 0;
-    width: fit-content;
-    position: absolute;
-    z-index: 3;
-    transition: opacity 0.28s ease-in;
-  }
   &:hover {
     border-color: var(--vp-c-brand);
 
