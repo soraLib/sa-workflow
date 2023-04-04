@@ -142,6 +142,8 @@ export class Graph implements Graph.Base {
   addChild(parent: WNode, child?: WNode): WNode {
     if (!child) child = this.createNode()
 
+    this.select(child)
+
     if (!parent.child) {
       bindParentChild(parent, child)
       return parent
@@ -150,6 +152,7 @@ export class Graph implements Graph.Base {
     const originalChild = parent.child
     bindParentChild(parent, child)
     bindParentChild(child, originalChild)
+
     return parent
   }
 
@@ -157,6 +160,8 @@ export class Graph implements Graph.Base {
     const parent = node.parent
     if (!parent) return
     if (!cond) cond = this.createCond()
+
+    this.select(cond)
 
     cond.parent = parent
 
@@ -214,6 +219,7 @@ export class Graph implements Graph.Base {
   }
 
   select(node: Arrayable<WNode>): void {
+    console.log('seclect', node)
     this.selected = Array.isArray(node) ? [...node] : [node]
   }
 

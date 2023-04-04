@@ -6,7 +6,7 @@
       class="remove-node"
       link
       type="danger"
-      @click="removeNode"
+      @click.stop="removeNode"
     >
       <ElIcon :size="24">
         <CloseSharp />
@@ -20,7 +20,7 @@
       color="#5856D5"
       circle
       :icon="AddBranchIcon"
-      @click="addBranch"
+      @click.stop="addBranch"
     />
 
     <slot />
@@ -31,7 +31,7 @@
       color="#5856D5"
       circle
       :icon="Add"
-      @click="addChild"
+      @click.stop="addChild"
     />
   </div>
 </template>

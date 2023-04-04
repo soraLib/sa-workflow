@@ -3,7 +3,7 @@
   <div
     v-else
     :class="['node-wrapper', { 'condition-node-wrapper': isCond }]"
-    @click="handleSelect"
+    @click.stop="handleSelect"
   >
     <NodeWrapper :node="node">
       <div :class="['node', { 'is-root': isRoot }]">
@@ -96,7 +96,9 @@ const showNextNodeSwapper = computed(() => {
 })
 const showPreviousSwapper = computed(() => condIndex.value > 0)
 
-const handleSelect = () => props.node.select()
+const handleSelect = () => {
+  props.node.select()
+}
 const handleSwapWithPrevious = () => props.node.swapWithPrevious()
 const handleSwapWithNext = () => props.node.swapWithNext()
 </script>
