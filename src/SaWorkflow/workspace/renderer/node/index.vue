@@ -1,11 +1,16 @@
 <template>
   <BranchRenderer v-if="isRoute(node)" :route="node" />
-  <div v-else :class="['node-wrapper', { 'condition-node-wrapper': isCond }]">
+  <div
+    v-else
+    :style="nodeOffsetStyle"
+    :class="['node-wrapper', { 'condition-node-wrapper': isCond }]"
+  >
     <ElButton
       v-if="condIndex > 0"
       title="swap nodes"
       class="nodes-swapper"
       link
+      :style="swapperOffsetStyle"
       @click="handleSwap"
     >
       <ElIcon :size="20">
@@ -29,9 +34,11 @@
 
 <script lang="ts" setup>
 import { SwapHorizontalOutline } from '@vicons/ionicons5'
+import { addUnit } from '@sa/utils'
 import EdgeRenderer from '../edge.vue'
 import BranchRenderer from '../branch.vue'
 import NodeWrapper from './container.vue'
+import type { CSSProperties } from 'vue'
 import type { WNode } from '@/SaWorkflow/node'
 import {
   NodeType,
@@ -56,6 +63,45 @@ const condIndex = computed(() => findCondIndex(props.node))
 const handleSwap = () => props.node.swapWithPrevious()
 
 const nodeWidth = computed(() => getNodeWidth(props.node))
+
+const nodeOffsetStyle = computed<CSSProperties>(() => {
+  if (props.node.child && isRoute(props.node.child)) {
+    const leftmostWidth = getNodeWidth(props.node.child.conditions[0])
+    const rightmostWidth = getNodeWidth(
+      props.node.child.conditions[props.node.child.conditions.length - 1]
+    )
+
+    const offset = (0.25 * leftmostWidth - 0.25 * rightmostWidth) * 322
+
+    if (props.node.graph.direction === 'horizontal') {
+      return {
+        marginTop: addUnit(offset),
+      }
+    }
+
+    return {
+      marginLeft: addUnit(offset),
+    }
+  }
+
+  return {}
+})
+const swapperOffsetStyle = computed<CSSProperties>(() => {
+  if (props.node.parent && isRoute(props.node.parent) && condIndex.value > 0) {
+    const previousNode = props.node.parent.conditions[condIndex.value - 1]
+
+    const previousHalfWidth = getNodeWidth(previousNode) * 0.5
+    const selfHalfWidth = nodeWidth.value > 1 ? nodeWidth.value * 0.5 : 0
+
+    const offset = -(previousHalfWidth - 0.5 + selfHalfWidth)
+
+    return {
+      left: addUnit(offset * 322 + (offset === 0 ? -18 : 60)),
+    }
+  }
+
+  return {}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -71,7 +117,6 @@ const nodeWidth = computed(() => getNodeWidth(props.node))
 }
 .nodes-swapper {
   position: absolute;
-  right: calc(100% - 18px);
   width: 36px;
   height: 36px;
   z-index: 1;
@@ -81,7 +126,7 @@ const nodeWidth = computed(() => getNodeWidth(props.node))
   flex-direction: column;
   position: relative;
   width: 220px;
-  min-height: 72px;
+  height: 72px;
   flex-shrink: 0;
   cursor: pointer;
   padding: 4px 12px;
@@ -128,8 +173,6 @@ const nodeWidth = computed(() => getNodeWidth(props.node))
     transform: rotate(90deg);
   }
   .node {
-    flex-direction: row;
-
     &:not(.is-root)::before {
       top: calc(50% - 6px);
       left: -13px;
