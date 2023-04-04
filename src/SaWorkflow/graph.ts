@@ -201,10 +201,11 @@ export class Graph implements Graph.Base {
 
       if (parent.conditions.length === 1) {
         const ancestor = parent.parent!
+        const left = parent.conditions[0]
         parent.conditions = []
-        const tail = getNodeTail(node)
+        const tail = getNodeTail(left)
 
-        bindParentChild(ancestor, node)
+        bindParentChild(ancestor, left)
         bindParentChild(tail, parent.child)
       }
     } else {
