@@ -10,12 +10,12 @@
         <div
           :class="[
             'previous-node-swapper-wrapper',
-            { 'has-previous': showPreviousSwapper },
+            { 'has-previous': showForwardSwapper },
           ]"
         >
           <ElButton
-            v-if="showPreviousSwapper"
-            title="swap nodes"
+            v-if="showForwardSwapper"
+            title="forward node"
             class="nodes-swapper"
             link
             @click.stop="handleSwapWithPrevious"
@@ -33,12 +33,12 @@
         <div
           :class="[
             'next-node-swapper-wrapper',
-            { 'has-next': showNextNodeSwapper },
+            { 'has-next': showBackwardNodeSwapper },
           ]"
         >
           <ElButton
-            v-if="showNextNodeSwapper"
-            title="swap nodes"
+            v-if="showBackwardNodeSwapper"
+            title="backward node"
             class="nodes-swapper"
             link
             @click.stop="handleSwapWithNext"
@@ -89,12 +89,12 @@ const SwapIcon = computed(() =>
     : SwapHorizontalOutline
 )
 
-const showNextNodeSwapper = computed(() => {
+const showBackwardNodeSwapper = computed(() => {
   if (!props.node.parent || !isRoute(props.node.parent)) return false
 
   return condIndex.value < props.node.parent.conditions.length - 1
 })
-const showPreviousSwapper = computed(() => condIndex.value > 0)
+const showForwardSwapper = computed(() => condIndex.value > 0)
 
 const handleSelect = () => {
   props.node.select()
