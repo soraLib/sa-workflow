@@ -80,6 +80,7 @@ const removeNode = () => props.node.remove()
 $half: 16px;
 // button line offset
 $offset: calc(1px - $margin * 0.5);
+$len: calc($margin * 0.5 - 2px);
 
 .node-container {
   position: relative;
@@ -109,7 +110,7 @@ $offset: calc(1px - $margin * 0.5);
       position: absolute;
       z-index: 1;
       left: $offset;
-      width: $margin * 0.5;
+      width: $len;
       height: 2px;
       background-color: var(--vp-c-brand);
     }
@@ -126,7 +127,7 @@ $offset: calc(1px - $margin * 0.5);
       z-index: 1;
       top: $offset;
       width: 2px;
-      height: $margin * 0.5;
+      height: $len;
       background-color: var(--vp-c-brand);
     }
   }
@@ -147,7 +148,7 @@ $offset: calc(1px - $margin * 0.5);
 
     &::before {
       width: 2px;
-      height: $margin * 0.5;
+      height: $len;
       left: unset;
       top: $offset;
     }
@@ -158,7 +159,7 @@ $offset: calc(1px - $margin * 0.5);
     top: calc(50% - $half);
 
     &::before {
-      width: $margin * 0.5;
+      width: $len;
       height: 2px;
       top: unset;
       left: $offset;
