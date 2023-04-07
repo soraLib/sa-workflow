@@ -39,11 +39,11 @@ export const createMockRoot = (graph: Graph): WNode => {
   deepRoute.conditions = [
     graph.createNode({
       parent: deepRoute,
-      attrs: { name: 'Deep Route Child A' },
+      attrs: { name: 'RA Child A' },
     }),
     graph.createNode({
       parent: deepRoute,
-      attrs: { name: 'Deep Route Child B' },
+      attrs: { name: 'RA Child B' },
     }),
   ]
 

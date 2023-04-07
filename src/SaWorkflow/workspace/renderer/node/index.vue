@@ -90,7 +90,8 @@ const SwapIcon = computed(() =>
 )
 
 const showBackwardNodeSwapper = computed(() => {
-  if (!props.node.parent || !isRoute(props.node.parent)) return false
+  if (!props.node.parent || !isRoute(props.node.parent) || !isCond.value)
+    return false
 
   return condIndex.value < props.node.parent.conditions.length - 1
 })
@@ -121,10 +122,9 @@ const handleSwapWithNext = () => props.node.swapWithNext()
   display: flex;
   height: 100%;
   position: relative;
-  width: 220px;
+  width: $node-width;
   cursor: pointer;
   z-index: 1;
-  overflow: hidden;
 
   .node-content {
     flex-grow: 1;

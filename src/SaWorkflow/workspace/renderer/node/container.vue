@@ -76,7 +76,10 @@ const removeNode = () => props.node.remove()
 @use 'button.scss';
 @import '../var.scss';
 
+// button half length
 $half: 16px;
+// button line offset
+$offset: calc(1px - $margin * 0.5);
 
 .node-container {
   position: relative;
@@ -105,7 +108,7 @@ $half: 16px;
       content: '';
       position: absolute;
       z-index: 1;
-      left: calc(-50% - 4px);
+      left: $offset;
       width: $margin * 0.5;
       height: 2px;
       background-color: var(--vp-c-brand);
@@ -121,7 +124,7 @@ $half: 16px;
       content: '';
       position: absolute;
       z-index: 1;
-      top: calc(-50% - 4px);
+      top: $offset;
       width: 2px;
       height: $margin * 0.5;
       background-color: var(--vp-c-brand);
@@ -146,7 +149,7 @@ $half: 16px;
       width: 2px;
       height: $margin * 0.5;
       left: unset;
-      top: calc(-50% - 4px);
+      top: $offset;
     }
   }
 
@@ -158,7 +161,7 @@ $half: 16px;
       width: $margin * 0.5;
       height: 2px;
       top: unset;
-      left: calc(-50% - 4px);
+      left: $offset;
     }
   }
 }

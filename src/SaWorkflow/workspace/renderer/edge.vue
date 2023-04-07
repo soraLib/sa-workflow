@@ -8,7 +8,7 @@
 @import 'var.scss';
 
 .edge-wrapper {
-  width: 220px;
+  width: $node-width;
   display: inline-flex;
   flex-shrink: 0;
   position: relative;
