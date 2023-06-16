@@ -11,7 +11,7 @@ A workflow component based on Vue3.
 ## Features
 
 - [ ] History record
-- [ ] Support for horizontal and vertical switching
+- [x] Support for horizontal and vertical switching
 - [ ] Highly configurable node properties
 - [ ] Customizable graph zooming
 
